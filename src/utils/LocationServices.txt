@@ -1,0 +1,212 @@
+import Permissions from 'react-native-permissions';
+import { Platform, Alert } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import _ from 'lodash'
+
+const LOCATION_REQUEST_LIMIT = 3
+
+var geolocationWatchRef = null
+var isLocationUpdated = false
+
+const geoWatchOptions = {
+    timeout: 10000,
+    maximumAge: 2000,
+    distanceFilter: 5,
+    showLocationDialog: true,
+    forceRequestLocation: true
+}
+
+const permissionType = Platform.select({
+    ios: Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+    android: Permissions.PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+})
+
+var canWatchLocation = true
+var callbacks = {}
+var recentCoords = null
+
+const initLocationService = (callback, context) => {
+    if (typeof context == 'string' && context.length > 0) {
+        callbacks[context] = callback;
+    } else {
+        return
+    }
+    if (!_.isNil(geolocationWatchRef)) {
+        return
+    }
+
+    Permissions.check(permissionType).then(result => {
+        onPermissionResult(result)
+    }).catch(error => {
+        if (typeof callbacks[context] == 'function') {
+            callbacks[context](null)
+        }
+        console.log("LocationServices", "initLocationService", 'Permissions.check', 'error', error)
+    })
+}
+
+const onPermissionResult = (result, requestCount = 1) => {
+    console.log("LocationServices", "onPermissionResult", 'requestCount', requestCount)
+
+    switch (result) {
+        case Permissions.RESULTS.DENIED:
+            if (requestCount >= LOCATION_REQUEST_LIMIT) {
+                Alert.alert(
+                    'Location access!',
+                    'MI DOC needs Location access to show you patients nearby your location.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                            onPress: () => {
+                                // TODO
+                            }
+                        },
+                        {
+                            text: 'Request again', onPress: () => {
+                                Permissions.request(permissionType).then(result => {
+                                    onPermissionResult(result, requestCount + 1)
+                                }).catch(error => {
+                                    console.log("LocationServices", "initLocationService", 'Permissions.request', 'error', error)
+                                })
+                            }
+                        },
+                    ],
+                    { cancelable: false },
+                );
+            } else {
+                Permissions.request(permissionType).then(result => {
+                    onPermissionResult(result, requestCount + 1)
+                }).catch(error => {
+                    console.log("LocationServices", "initLocationService", 'Permissions.request', 'error', error)
+                })
+            }
+            break;
+        case Permissions.RESULTS.GRANTED:
+            setupGeoLocationWatch()
+            break;
+        case Permissions.RESULTS.BLOCKED:
+            Alert.alert(
+                'Location access!',
+                'MI DOC needs Location access to show you patients nearby your location.',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                        onPress: () => {
+                            // TODO
+                        }
+                    },
+                    {
+                        text: 'Open Settings', onPress: () => {
+                            Permissions.openSettings().then(() => {
+                            }).catch(error => {
+                            })
+                        }
+                    },
+                ],
+                { cancelable: false },
+            );
+            break;
+    }
+}
+
+const setupGeoLocationWatch = () => {
+    Geolocation.getCurrentPosition(
+        (locationData) => {
+            isLocationUpdated = true
+            onLocationReceived(locationData)
+            geolocationWatchRef = Geolocation.watchPosition(onLocationReceived, (error) => {
+                console.log("LocationServices", "setupGeoLocationWatch", 'watchPosition', 'error', error)
+
+                if (error) {
+                    removeListener()
+                }
+            }, geoWatchOptions)
+        },
+        (error) => {
+            canWatchLocation = false
+            console.log("LocationServices", "setupGeoLocationWatch", 'getCurrentPosition', 'error', error)
+        }, {
+        timeout: 10000,
+        forceRequestLocation: true
+    })
+    // updateLocation({
+    //     latitude: 32.163843,
+    //     longitude: 74.189883
+    // })
+}
+
+const watchLocation = (callback, context) => {
+    if (!canWatchLocation) {
+        if (typeof callback == 'function') callback(null)
+        return
+    }
+    if (typeof context == 'string' && context.length > 0) {
+        callbacks[context] = callback;
+    } else {
+        return
+    }
+
+    if (!_.isNil(geolocationWatchRef)) {
+        return
+    }
+
+    Permissions.check(permissionType).then(result => {
+        if (result == Permissions.RESULTS.GRANTED) {
+            setupGeoLocationWatch()
+        }
+    }).catch(error => {
+        console.log("LocationServices", "watchLocation", 'Permissions.check', 'error', error)
+    })
+}
+
+const onLocationReceived = (locationData) => {
+    console.log("LocationServices", "onLocationReceived", locationData)
+    if (locationData?.coords) updateLocation(locationData.coords)
+}
+
+const updateLocation = async (coords) => {
+    Object.values(callbacks).map(callback => {
+        recentCoords = coords
+        callback(coords)
+    })
+}
+
+const removeListener = () => {
+    console.log("LocationServices", 'updateLocation', 'removeListener', geolocationWatchRef);
+    if (!_.isNil(geolocationWatchRef)) {
+        Geolocation.clearWatch(geolocationWatchRef)
+        geolocationWatchRef = null
+        Geolocation.stopObserving()
+        callbacks = {}
+    }
+}
+
+const hasLocationPermission = () => {
+    return isLocationUpdated;
+}
+
+const addCallback = (callback, context) => {
+    if (typeof context == 'string' && context.length > 0) {
+        callbacks[context] = callback;
+        if(recentCoords){
+            callback(recentCoords)
+        }
+    } 
+}
+
+const removeCallback = (callback, context) => {
+    if (typeof context == 'string' && context.length > 0) {
+        delete callbacks[context]
+    } 
+}
+
+export default {
+    initLocationService,
+    removeListener,
+    watchLocation,
+    hasLocationPermission,
+    addCallback,
+    removeCallback
+}

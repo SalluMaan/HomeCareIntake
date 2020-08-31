@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "sdkVersion": "38.0.0",
+    "name": "HomeCare",
+    "slug": "HomeCare",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#e4f2ff",
+      "resizeMode": "contain"
+
+
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.HomeCare.HomeCare",
+      "versionCode": 1
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
