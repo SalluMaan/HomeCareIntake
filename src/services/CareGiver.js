@@ -139,6 +139,36 @@ export const getSchedules = () =>
     }
   });
 
+  export const chechinSchedule = (scheduleId) =>
+  new Promise(async (resolve, reject) => {
+    try {
+
+      const response = await axios.get(`/checkinuser/${scheduleId}`);
+      const { data } = response;
+      console.log("chechinSchedule", "response", data);
+
+      resolve(data);
+    } catch (error) {
+      console.log("chechinSchedule", "error", error.response);
+      reject(error);
+    }
+  });
+
+  export const chechoutSchedule = (scheduleId) =>
+  new Promise(async (resolve, reject) => {
+    try {
+
+      const response = await axios.get(`/checkoutuser/${scheduleId}`);
+      const { data } = response;
+      console.log("chechoutSchedule", "response", data);
+
+      resolve(data);
+    } catch (error) {
+      console.log("chechoutSchedule", "error", error.response);
+      reject(error);
+    }
+  });
+
 export const RES_STATUS = {
   SUCCESS: "success",
 };

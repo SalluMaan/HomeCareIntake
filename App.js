@@ -117,6 +117,8 @@ import NotificationCare from "./caregiver/notificationCare";
 import OTPCare from "./caregiver/OTPCare";
 import ResetPassCare from "./caregiver/ResetPassCare";
 
+console.disableYellowBox = true
+
 const TabNav = createBottomTabNavigator({
   First: {
     screen: HomePage,
