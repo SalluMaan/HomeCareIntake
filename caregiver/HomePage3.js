@@ -10,6 +10,7 @@ import {
   StatusBar,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from "react-native";
 import IconAnt from "react-native-vector-icons/AntDesign";
 import IconAnt1 from "react-native-vector-icons/Entypo";
@@ -20,7 +21,7 @@ import { Button } from "react-native-paper";
 import * as Font from "expo-font";
 YellowBox.ignoreWarnings(["Remote debugger"]);
 import AsyncStorage from "@react-native-community/async-storage";
-import { CareAllReminderPath } from "./constantCaregiver";
+import { CareAllReminderPath, DeleteReminderPath } from "./constantCaregiver";
 import axios from "axios";
 import Moment from "moment";
 
@@ -73,6 +74,24 @@ export default class HomePage3 extends React.Component {
       })
       .catch((error) => {
         console.log("Error", error);
+      });
+  };
+
+  handleDelete = (id) => {
+    console.log("ID to be Delted:", id);
+    axios
+      .get(DeleteReminderPath + id)
+      .then((res) => {
+        console.log("RSp:", res.data);
+        // const data = res.data["success"];
+        // console.log("Response", data);
+
+        // this.setState({ reminders: data, refreshing: false });
+        Alert.alert("Response", "Reminder Deleted Successfully!");
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        Alert.alert("Response", "Error while deleting reminder");
       });
   };
 
@@ -206,24 +225,38 @@ export default class HomePage3 extends React.Component {
                         marginTop: 10,
                       }}
                     >
-                      <IconAnt1
-                        name="eye"
-                        size={25}
-                        color="#A4A4A4"
-                        style={{ marginLeft: 0 }}
-                      />
-                      <IconAnt2
-                        name="edit"
-                        size={25}
-                        color="#A4A4A4"
-                        style={{ marginLeft: 15 }}
-                      />
-                      <IconAnt2
-                        name="delete"
-                        size={25}
-                        color="#A4A4A4"
-                        style={{ marginLeft: 15 }}
-                      />
+                      <TouchableOpacity>
+                        <IconAnt1
+                          name="eye"
+                          size={25}
+                          color="#A4A4A4"
+                          style={{ marginLeft: 0 }}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate("EditReminder", {
+                            obj: sch,
+                          })
+                        }
+                      >
+                        <IconAnt2
+                          name="edit"
+                          size={25}
+                          color="#A4A4A4"
+                          style={{ marginLeft: 15 }}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.handleDelete(sch.id)}
+                      >
+                        <IconAnt2
+                          name="delete"
+                          size={25}
+                          color="#A4A4A4"
+                          style={{ marginLeft: 15 }}
+                        />
+                      </TouchableOpacity>
                     </View>
                   </View>
                 );

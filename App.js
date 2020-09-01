@@ -116,6 +116,7 @@ import ResetPasswordCare from "./screens/ResetPasswordCare";
 import NotificationCare from "./caregiver/notificationCare";
 import OTPCare from "./caregiver/OTPCare";
 import ResetPassCare from "./caregiver/ResetPassCare";
+import EditReminder from "./caregiver/EditReminder";
 
 const TabNav = createBottomTabNavigator({
   First: {
@@ -284,6 +285,7 @@ const FeedStack2 = createStackNavigator({
   },
 
   SetRemainder: { screen: SetRemainder },
+  EditReminder: { screen: EditReminder },
   MyaccountCare: { screen: MyaccountCare },
   Myaccount2Care: { screen: Myaccount2Care },
   ViewSchedule: { screen: ViewScheduleCare },
@@ -389,8 +391,24 @@ const drawNav = createDrawerNavigator({
 });
 
 const drawNav2 = createDrawerNavigator({
-  First: { screen: FeedStack2 },
-  Reminder: { screen: HomePage3 },
+  First: {
+    screen: FeedStack2,
+    navigationOptions: {
+      title: "Home",
+    },
+  },
+  Reminder: {
+    screen: HomePage3,
+    navigationOptions: {
+      title: "Reminders",
+    },
+  },
+  Incident2: {
+    screen: Incident2,
+    navigationOptions: {
+      title: "Incident Reports",
+    },
+  },
   // Reminder2: { screen: HomePage2 },
   // Reminder4: { screen: HomePage4 },
   // Reminder: { screen: HomePage3 },
