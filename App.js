@@ -118,6 +118,8 @@ import OTPCare from "./caregiver/OTPCare";
 import ResetPassCare from "./caregiver/ResetPassCare";
 import EditReminder from "./caregiver/EditReminder";
 
+console.disableYellowBox = true
+
 const TabNav = createBottomTabNavigator({
   First: {
     screen: HomePage,

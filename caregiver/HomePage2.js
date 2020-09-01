@@ -136,7 +136,14 @@ export default class HomePage2 extends React.Component {
             {this.state.totalSch ? (
               this.state.totalSch.map((sch, id) => {
                 return (
-                  <View key={id}>
+                  <TouchableOpacity 
+                    key={id}
+                    onPress={() => {
+                      this.props.navigation.navigate('ScheduleDet', {
+                        schedule: sch
+                      })
+                    }}
+                  >
                     <View
                       style={{
                         width: 334,
@@ -290,7 +297,7 @@ export default class HomePage2 extends React.Component {
                         </Text>
                       </Button>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 );
               })
             ) : (

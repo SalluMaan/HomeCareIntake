@@ -10,8 +10,6 @@
       "image": "./assets/splash.png",
       "backgroundColor": "#e4f2ff",
       "resizeMode": "contain"
-
-
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,7 +19,8 @@
     ],
     "android": {
       "package": "com.HomeCare.HomeCare",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": [ "ACCESS_FINE_LOCATION" ]
     },
     "ios": {
       "supportsTablet": true
