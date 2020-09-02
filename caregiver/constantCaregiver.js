@@ -23,11 +23,21 @@ export const DeleteReminderPath =
 
 // export const AddNewReportPath =
 //   "https://aplushome.facebhoook.com/api/uploadincidentreports";
+export const CareSignUpPath = "https://aplushome.facebhoook.com/api/signup";
 
 export const GetAllReportsPath =
-  "https://aplushome.facebhoook.com/api/getnotes/";
+  "https://aplushome.facebhoook.com/api/getincidentreports/";
 
 export const AddNewReportPath =
-  "https://aplushome.facebhoook.com/api/uploadcaregivernotes";
-
+  "https://aplushome.facebhoook.com/api/uploadincidentreports";
+export const CarePayrollRequestPath =
+  "https://aplushome.facebhoook.com/api/caregiverpayrollrequest";
+export const uploadNotesProfilePath =
+  "https://aplushome.facebhoook.com/api/uploadnotes";
+export const GetNotesProfilePath =
+  "https://aplushome.facebhoook.com/api/getnotes/";
+export const AddCertificatePath =
+  "https://aplushome.facebhoook.com/api/certificate/";
+export const GetCertificatePath =
+  "https://aplushome.facebhoook.com/api/getcertificate/";
 //   https://aplushome.facebhoook.com/api/updatecaregiverprofile/2

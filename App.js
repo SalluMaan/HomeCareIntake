@@ -117,8 +117,9 @@ import NotificationCare from "./caregiver/notificationCare";
 import OTPCare from "./caregiver/OTPCare";
 import ResetPassCare from "./caregiver/ResetPassCare";
 import EditReminder from "./caregiver/EditReminder";
+import CarePayroll from "./caregiver/CarePayroll";
 
-console.disableYellowBox = true
+console.disableYellowBox = true;
 
 const TabNav = createBottomTabNavigator({
   First: {
@@ -411,6 +412,17 @@ const drawNav2 = createDrawerNavigator({
       title: "Incident Reports",
     },
   },
+  CarePayroll: {
+    screen: CarePayroll,
+    navigationOptions: {
+      title: "Request Payroll",
+    },
+  },
+
+  TestCert1: { screen: TestCert1Care },
+  TestCert2: { screen: TestCert2Care },
+  TestCert3: { screen: TestCert3Care },
+
   // Reminder2: { screen: HomePage2 },
   // Reminder4: { screen: HomePage4 },
   // Reminder: { screen: HomePage3 },

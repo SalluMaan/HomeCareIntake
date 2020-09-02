@@ -44,7 +44,10 @@ import {
   Label,
 } from "native-base";
 import { updateProfile } from "../src/services/CareGiver";
-import { CareUpdateProfilePath } from "./constantCaregiver";
+import {
+  CareUpdateProfilePath,
+  uploadNotesProfilePath,
+} from "./constantCaregiver";
 YellowBox.ignoreWarnings(["Remote debugger"]);
 
 export default class MyaccountCare extends React.Component {
@@ -174,10 +177,33 @@ export default class MyaccountCare extends React.Component {
 
   pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
-    console.log(result);
-    this.setState({
-      file: result.uri,
-    });
+    // console.log(result)
+    let name = result.name;
+    name = name.split(".");
+    let type = name[name.length - 1];
+    console.log("type:", type);
+
+    let file = result.uri;
+    const Docobj = {
+      uri: file,
+      type: "file/" + type,
+      name: "ProfileNotesID-" + this.state.token,
+    };
+
+    const formData = new FormData();
+    formData.append("caregiver_id", this.state.token);
+    formData.append("notes", Docobj);
+
+    axios
+      .post(uploadNotesProfilePath, formData)
+      .then((res) => {
+        console.log("PICKIDDOC:", res.data);
+        Alert.alert("Response", res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("Response", "Error while uploading ID Documents");
+      });
   };
 
   showImage = (data) => {

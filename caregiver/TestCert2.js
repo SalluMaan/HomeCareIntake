@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   StatusBar,
+  Alert,
   TouchableOpacity,
 } from "react-native";
 import IconAnt from "react-native-vector-icons/Feather";
@@ -26,22 +27,27 @@ import {
 } from "native-base";
 
 YellowBox.ignoreWarnings(["Remote debugger"]);
+import axios from "axios";
+import * as DocumentPicker from "expo-document-picker";
+
+import AsyncStorage from "@react-native-community/async-storage";
+import { AddCertificatePath, GetCertificatePath } from "./constantCaregiver";
 
 export default class TestCert2Care extends React.Component {
   static navigationOptions = {
     //To hide the NavigationBar from current Screen
     headerShown: false,
   };
-  state = {
-    assetsLoaded: false,
-  };
+
   constructor(props) {
     super(props);
     this.state = {
       selected: undefined,
+      token: "",
+      assetsLoaded: false,
+      pick: false,
+      fileObject: "",
     };
-    this.state = { chosenDate: new Date() };
-    this.setDate = this.setDate.bind(this);
   }
   setDate(newDate) {
     this.setState({ chosenDate: newDate });
@@ -55,9 +61,81 @@ export default class TestCert2Care extends React.Component {
     await Font.loadAsync({
       proximanova: require("../assets/fonts/proximanova.otf"),
     });
+    this.getData();
 
     this.setState({ assetsLoaded: true });
   }
+
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) {
+        // value previously stored
+        console.log("Token", value);
+        this.setState({
+          token: value,
+        });
+        this.getCertificate();
+      }
+    } catch (e) {
+      // error reading value
+      console.log("Reading Value Error", e);
+    }
+  };
+
+  getCertificate = () => {
+    axios
+      .get(GetCertificatePath + this.state.token)
+      .then((res) => {
+        // console.log("Certificate:", res.data);
+        let obj = res.data.success;
+        obj = obj[0];
+        console.log("response Certificate Get:", obj);
+        console.log();
+        this.setState({
+          fileObject: obj,
+          pick: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    // console.log(result)
+    let name = result.name;
+    name = name.split(".");
+    let type = name[name.length - 1];
+
+    let file = result.uri;
+    const Docobj = {
+      uri: file,
+      type: "file/" + type,
+      name: "CertificateID-" + this.state.token,
+    };
+    this.setState({
+      pick: true,
+    });
+    const formData = new FormData();
+    formData.append("certificate", Docobj);
+    console.log("FormData Certidcate:", formData);
+
+    axios
+      .post(AddCertificatePath + this.state.token, formData)
+      .then((res) => {
+        console.log("Certificate:", res.data);
+        Alert.alert("Response", res.data.message);
+        this.setState({
+          pick: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("Response", "Error while uploading Certificate");
+      });
+  };
 
   render() {
     const { assetsLoaded } = this.state;
@@ -130,7 +208,7 @@ export default class TestCert2Care extends React.Component {
 
             <View style={{ flexDirection: "row", marginTop: 50 }}>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("TestCert3")}
+              // onPress={() => this.props.navigation.navigate("TestCert3")}
               >
                 <Text
                   style={{
@@ -144,20 +222,35 @@ export default class TestCert2Care extends React.Component {
                   Certifications
                 </Text>
               </TouchableOpacity>
-
-              <IconAnt1
-                name="addfile"
-                size={30}
-                color="#FF4B7D"
-                style={{ marginTop: 0, marginLeft: 180 }}
-              />
+              <TouchableOpacity onPress={() => this.pickDocument()}>
+                <IconAnt1
+                  name="addfile"
+                  size={30}
+                  color="#FF4B7D"
+                  style={{ marginTop: 0, marginLeft: 180 }}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ height: 130 }}>
+              {this.state.pick ? (
+                <TouchableOpacity
+                  onPress={() => alert(this.state.fileObject.certificate)}
+                >
+                  <IconAnt1
+                    name="addfile"
+                    size={30}
+                    color="#FF4B7D"
+                    style={{ marginTop: "5%", marginHorizontal: "8%" }}
+                  />
+                </TouchableOpacity>
+              ) : null}
             </View>
 
             <View
               style={{
                 backgroundColor: "#7D7D7D",
                 borderWidth: 0.5,
-                marginTop: 150,
+                marginTop: 10,
               }}
             ></View>
 

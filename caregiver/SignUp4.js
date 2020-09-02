@@ -9,11 +9,14 @@ import {
   ActivityIndicator,
   StatusBar,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import IconAnt from "react-native-vector-icons/Feather";
 import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import * as Font from "expo-font";
+import * as DocumentPicker from "expo-document-picker";
+
 import {
   Container,
   Header,
@@ -24,30 +27,41 @@ import {
   DatePicker,
 } from "native-base";
 YellowBox.ignoreWarnings(["Remote debugger"]);
-
+import axios from "axios";
+import Moment from "moment";
+import { CareSignUpPath } from "./constantCaregiver";
 export default class SignUp4 extends React.Component {
   static navigationOptions = {
     //To hide the NavigationBar from current Screen
     headerShown: false,
   };
-  state = {
-    assetsLoaded: false,
-  };
 
   constructor(props) {
     super(props);
     this.state = {
+      assetsLoaded: false,
       selected: undefined,
+      chosenDate: new Date(),
+      file: "",
+      typeFile: "",
+      filename: "",
+      file2: "",
+      typeFile2: "",
+      filename2: "",
+      docName: "",
+      docType: "",
+      time: "",
     };
-    this.state = { chosenDate: new Date() };
     this.setDate = this.setDate.bind(this);
   }
   setDate(newDate) {
-    this.setState({ chosenDate: newDate });
+    const newdate = Moment(newDate).format("YYYY-MM-DD");
+    console.log("A date has been picked: ", newdate);
+    this.setState({ time: newdate });
   }
   onValueChange(value) {
     this.setState({
-      selected: value,
+      docType: value,
     });
   }
   async componentDidMount() {
@@ -57,6 +71,86 @@ export default class SignUp4 extends React.Component {
 
     this.setState({ assetsLoaded: true });
   }
+
+  pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    let name = result.name;
+    name = name.split(".");
+    let type = name[name.length - 1];
+    console.log("type:", type);
+    this.setState({
+      file: result.uri,
+      typeFile: type,
+      fileName: name,
+    });
+  };
+
+  pickDocument2 = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    console.log(result);
+    let name = result.name;
+    name = name.split(".");
+    let type = name[name.length - 1];
+    console.log("type:", type);
+    this.setState({
+      file2: result.uri,
+      typeFile2: type,
+      fileName2: name,
+    });
+  };
+
+  onClickListener = () => {
+    const DocName = this.state.docName;
+    const DocType = this.state.docType;
+    const ExpiryDate = this.state.time;
+    console.log("ExpiryDat", ExpiryDate);
+    // const ID = this.state.careID;
+
+    const { user } = this.props.navigation.state.params;
+    console.log("User :", user);
+
+    const Docobj = {
+      uri: this.state.file,
+      type: "file/" + this.state.typeFile,
+      name: "FileName-" + user.name,
+    };
+
+    const Employobj = {
+      uri: this.state.file2,
+      type: "file/" + this.state.typeFile2,
+      name: "FileName-" + user.name,
+    };
+
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("c_password", user.confirm);
+    formData.append("password", user.password);
+    formData.append("phone", user.phone);
+    formData.append("city", user.city);
+    formData.append("address", user.address);
+    formData.append("zipcode", user.zipcode);
+    formData.append("doc_name", DocName);
+    formData.append("doc_type", DocType);
+    formData.append("expiry_date", ExpiryDate);
+    formData.append("file", Employobj);
+    formData.append("doc", Docobj);
+
+    console.log("Fomr Data", formData);
+
+    axios
+      .post(CareSignUpPath, formData)
+      .then((res) => {
+        console.log("Response.SignUP:", res.data);
+        Alert.alert("Response", res.data.message);
+        this.props.navigation.navigate("LoginCare");
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("Response", "Error while Sign Up!");
+      });
+  };
 
   render() {
     const { user } = this.props.navigation.state.params;
@@ -122,6 +216,7 @@ export default class SignUp4 extends React.Component {
               <Input
                 placeholder="Document Name"
                 placeholderTextColor={"#A4A4A4"}
+                onChangeText={(docName) => this.setState({ docName })}
               />
             </Item>
 
@@ -140,7 +235,7 @@ export default class SignUp4 extends React.Component {
               <Form>
                 <Picker
                   mode="dropdown"
-                  placeholder="Select your SIM"
+                  placeholder="Select your Identity Document Type"
                   iosIcon={<Icon name="arrow-down" />}
                   placeholder="Select your SIM"
                   textStyle={{ color: "#5cb85c" }}
@@ -151,14 +246,21 @@ export default class SignUp4 extends React.Component {
                   }}
                   itemTextStyle={{ color: "#788ad2" }}
                   style={{ width: undefined, color: "#7D7D7D" }}
-                  selectedValue={this.state.selected}
+                  selectedValue={this.state.docType}
                   onValueChange={this.onValueChange.bind(this)}
                 >
-                  <Picker.Item label="Document type-Passport" value="key0" />
-                  <Picker.Item label="ATM Card" value="key1" />
-                  <Picker.Item label="Debit Card" value="key2" />
-                  <Picker.Item label="Credit Card" value="key3" />
-                  <Picker.Item label="Net Banking" value="key4" />
+                  <Picker.Item
+                    label="Select your Identity Document Type"
+                    value="0"
+                  />
+                  <Picker.Item label="ID Card" value="idCard" />
+                  <Picker.Item label="Passport" value="passport" />
+                  <Picker.Item label="Driving License" value="drivingLicense" />
+                  {/* <Picker.Item label="Passport" value="passport" /> */}
+                  <Picker.Item label="ATM Card" value="atmCard" />
+                  <Picker.Item label="Debit Card" value="debitCard" />
+                  <Picker.Item label="Credit Card" value="creditCard" />
+                  <Picker.Item label="Net Banking" value="netBanking" />
                 </Picker>
               </Form>
             </Content>
@@ -176,15 +278,12 @@ export default class SignUp4 extends React.Component {
               }}
             >
               <DatePicker
-                defaultDate={new Date(2018, 4, 4)}
-                minimumDate={new Date(2018, 1, 1)}
-                maximumDate={new Date(2018, 12, 31)}
                 locale={"en"}
                 timeZoneOffsetInMinutes={undefined}
                 modalTransparent={false}
                 animationType={"fade"}
                 androidMode={"default"}
-                placeHolderText="Expire Date"
+                placeHolderText="Expiry Date"
                 textStyle={{ color: "green" }}
                 placeHolderTextStyle={{ color: "#7D7D7D" }}
                 onDateChange={this.setDate}
@@ -196,6 +295,7 @@ export default class SignUp4 extends React.Component {
             </Content>
 
             <Button
+              onPress={() => this.pickDocument()}
               style={{
                 marginTop: 43,
                 width: 334,
@@ -244,6 +344,7 @@ export default class SignUp4 extends React.Component {
               </Text>
 
               <Button
+                onPress={() => this.pickDocument2()}
                 style={{
                   marginTop: 24,
                   width: 297,
@@ -268,10 +369,9 @@ export default class SignUp4 extends React.Component {
                 </Text>
               </Button>
             </View>
+            {/* this.props.navigation.navigate("SignUp5") */}
 
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("SignUp5")}
-            >
+            <TouchableOpacity onPress={() => this.onClickListener()}>
               <Button
                 style={{
                   marginTop: 23,

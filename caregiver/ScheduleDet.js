@@ -17,8 +17,8 @@ import IconAnt3 from "react-native-vector-icons/Feather";
 import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import * as Font from "expo-font";
-import moment from 'moment'
-import * as Location from 'expo-location';
+import moment from "moment";
+import * as Location from "expo-location";
 
 import * as CareGiverServices from "../src/services/CareGiver";
 
@@ -32,15 +32,15 @@ export default class ScheduleDetCare extends React.Component {
   state = {
     assetsLoaded: false,
     schedule: null,
-    nextAction: 'checkin'
+    nextAction: "checkin",
   };
 
   constructor(props) {
-    super(props)
+    super(props);
 
-    const { params } = props.navigation.state
+    const { params } = props.navigation.state;
     if (params?.schedule) {
-      this.state.schedule = params.schedule
+      this.state.schedule = params.schedule;
     }
   }
 
@@ -53,57 +53,70 @@ export default class ScheduleDetCare extends React.Component {
   }
 
   onCheckinPress = async () => {
-    const { schedule } = this.state
+    const { schedule } = this.state;
     if (schedule == null) return;
 
     const { status } = await Location.requestPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('', 'Unable to checkin without location permission.');
+    if (status !== "granted") {
+      Alert.alert("", "Unable to checkin without location permission.");
       return;
     }
 
     try {
       const location = await Location.getLastKnownPositionAsync();
-      console.log('onCheckinPress-location', location)
+      console.log("onCheckinPress-location", location);
     } catch (error) {
-      console.log('Location.requestPermissionsAsync-error', error)
-      Alert.alert('', 'Unable to get your location for checkin process. Check your settings and enable location.');
+      console.log("Location.requestPermissionsAsync-error", error);
+      Alert.alert(
+        "",
+        "Unable to get your location for checkin process. Check your settings and enable location."
+      );
 
       return;
     }
 
-    CareGiverServices.chechinSchedule(schedule.id).then(response => {
-      console.log('CareGiverServices.chechinSchedule-response', response)
-      // this.props.navigation.navigate("ScheduleDet2")
-      this.setState({
-        nextAction: 'checkout'
+    CareGiverServices.chechinSchedule(schedule.id)
+      .then((response) => {
+        console.log("CareGiverServices.chechinSchedule-response", response);
+        // this.props.navigation.navigate("ScheduleDet2")
+        this.setState({
+          nextAction: "checkout",
+        });
       })
-    }).catch(error => {
-      console.log('CareGiverServices.chechinSchedule-error', error)
-      Alert.alert('', 'An error occured while checking in. Please try again.');
-    })
-  }
+      .catch((error) => {
+        console.log("CareGiverServices.chechinSchedule-error", error);
+        Alert.alert(
+          "",
+          "An error occured while checking in. Please try again."
+        );
+      });
+  };
 
   onCheckoutPress = async () => {
-    const { schedule } = this.state
+    const { schedule } = this.state;
     if (schedule == null) return;
 
-    CareGiverServices.chechoutSchedule(schedule.id).then(response => {
-      console.log('CareGiverServices.chechoutSchedule-response', response)
-      this.setState({
-        nextAction: 'checkin'
+    CareGiverServices.chechoutSchedule(schedule.id)
+      .then((response) => {
+        console.log("CareGiverServices.chechoutSchedule-response", response);
+        this.setState({
+          nextAction: "checkin",
+        });
       })
-    }).catch(error => {
-      console.log('CareGiverServices.chechoutSchedule-error', error)
-      Alert.alert('', 'An error occured while checking in. Please try again.');
-    })
-  }
+      .catch((error) => {
+        console.log("CareGiverServices.chechoutSchedule-error", error);
+        Alert.alert(
+          "",
+          "An error occured while checking in. Please try again."
+        );
+      });
+  };
 
   render() {
-    const { schedule, assetsLoaded } = this.state
+    const { schedule, assetsLoaded } = this.state;
 
     if (schedule && assetsLoaded) {
-      return this.renderDetails()
+      return this.renderDetails();
     }
 
     return (
@@ -111,26 +124,26 @@ export default class ScheduleDetCare extends React.Component {
         <ActivityIndicator />
         <StatusBar barStyle="default" />
       </View>
-    )
+    );
   }
 
   renderDetails() {
     const { schedule, nextAction } = this.state;
+    console.log("SCHEDULE.INDIVIDUAL:", schedule);
+    const array = schedule.client_task.split(",");
+    console.log("Ärr:", array);
     return (
       <View style={styles.container}>
         <ScrollView>
-          <View
-            style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}
-          >
-            <IconAnt
-              name="left"
-              size={20}
-              color="#A4A4A4"
-              style={{ marginRight: 5 }}
-            />
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("EditSchedule")}
-            ></TouchableOpacity>
+          <View style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <IconAnt
+                name="left"
+                size={20}
+                color="#A4A4A4"
+                style={{ marginRight: 5 }}
+              />
+            </TouchableOpacity>
           </View>
 
           <View
@@ -152,7 +165,7 @@ export default class ScheduleDetCare extends React.Component {
                 color: "#434343",
               }}
             >
-              {schedule?.client_name || ''}
+              {schedule?.client_name || ""}
             </Text>
             <View
               style={{ flexDirection: "row", marginLeft: 17, marginTop: 30 }}
@@ -165,7 +178,10 @@ export default class ScheduleDetCare extends React.Component {
                   fontWeight: "600",
                   color: "#7D7D7D",
                 }}
-              >{schedule.address}{schedule.address_line2 ? '\n' + schedule.address_line2 : ''}</Text>
+              >
+                {schedule.address}
+                {schedule.address_line2 ? "\n" + schedule.address_line2 : ""}
+              </Text>
             </View>
             <View
               style={{ flexDirection: "row", marginLeft: 17, marginTop: 10 }}
@@ -178,7 +194,9 @@ export default class ScheduleDetCare extends React.Component {
                   fontWeight: "600",
                   color: "#7D7D7D",
                 }}
-              >{schedule.phone || ''}</Text>
+              >
+                {schedule.phone || ""}
+              </Text>
             </View>
           </View>
 
@@ -240,7 +258,9 @@ export default class ScheduleDetCare extends React.Component {
                 fontWeight: "700",
                 color: "#434343",
               }}
-            >{moment(schedule.date, 'YYYY-MM-DD').format('dddd, MMMM D, YYYY')}</Text>
+            >
+              {moment(schedule.date, "YYYY-MM-DD").format("dddd, MMMM D, YYYY")}
+            </Text>
             <View
               style={{ flexDirection: "row", marginLeft: 17, marginTop: 0 }}
             >
@@ -252,16 +272,15 @@ export default class ScheduleDetCare extends React.Component {
                   color: "#7D7D7D",
                 }}
               >
-                Start time: {moment(schedule.timeStart, 'hh:mm:ss').format('h:mm A')}
+                Start time:{" "}
+                {moment(schedule.timeStart, "hh:mm:ss").format("h:mm A")}
                 {" - "}
-                {moment(schedule.timeEnd, 'hh:mm:ss').format('h:mm A')}
+                {moment(schedule.timeEnd, "hh:mm:ss").format("h:mm A")}
               </Text>
             </View>
 
-            {nextAction == 'checkin' &&
-              <TouchableOpacity
-                onPress={this.onCheckinPress}
-              >
+            {nextAction == "checkin" && (
+              <TouchableOpacity onPress={this.onCheckinPress}>
                 <Button
                   style={{
                     marginTop: 20,
@@ -283,12 +302,12 @@ export default class ScheduleDetCare extends React.Component {
                     }}
                   >
                     Check-in
-                </Text>
+                  </Text>
                 </Button>
               </TouchableOpacity>
-            }
+            )}
 
-            <View style={{ marginLeft: 17, marginTop: 56 }}>
+            <View style={{ marginLeft: 17, marginTop: 56, width: "100%" }}>
               <Text
                 style={{
                   fontSize: 16,
@@ -300,77 +319,49 @@ export default class ScheduleDetCare extends React.Component {
                 Task List
               </Text>
 
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", width: "100%" }}>
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Bed Bath/Sponge Bath
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Brushing Teeth
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Assist to Bathroom
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Brushing Teeth
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Maintain Bedroom
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginLeft: 0,
-                      fontWeight: "600",
-                      color: "#7D7D7D",
-                      marginTop: 10,
-                    }}
-                  >
-                    Take for a Walk
-                  </Text>
+                  {array ? (
+                    array.map((arr, id) => {
+                      return (
+                        <View
+                          key={id}
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            width: "70%",
+                            // backgroundColor: "red",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: "600",
+                              color: "#7D7D7D",
+                              marginTop: 10,
+                            }}
+                          >
+                            {arr}
+                            {/* {"Play Game New "} */}
+                          </Text>
+
+                          <IconAnt
+                            name="checkcircle"
+                            size={20}
+                            color="#EFEEEE"
+                            style={{ marginTop: 5 }}
+                          />
+                        </View>
+                      );
+                    })
+                  ) : (
+                    <Text style={{ color: "#a4a4a4", margin: 25 }}>
+                      NO Task Found
+                    </Text>
+                  )}
                 </View>
 
-                <View style={{ marginLeft: 120 }}>
+                {/* <View style={{ marginLeft: 120 }}>
                   <View style={{ flexDirection: "row" }}>
                     <IconAnt
                       name="checkcircle"
@@ -424,7 +415,7 @@ export default class ScheduleDetCare extends React.Component {
                       style={{ marginTop: 8 }}
                     />
                   </View>
-                </View>
+                </View> */}
               </View>
             </View>
           </View>
@@ -446,7 +437,7 @@ export default class ScheduleDetCare extends React.Component {
               color: "#434343",
             }}
           >
-            Notes
+            Take a Note
           </Text>
           <Item
             style={{
@@ -498,7 +489,7 @@ export default class ScheduleDetCare extends React.Component {
             }}
           ></View>
 
-          {nextAction == 'checkout' &&
+          {nextAction == "checkout" && (
             <Button
               style={{
                 marginTop: 20,
@@ -522,9 +513,9 @@ export default class ScheduleDetCare extends React.Component {
                 }}
               >
                 Check-out
-            </Text>
+              </Text>
             </Button>
-          }
+          )}
         </ScrollView>
       </View>
     );

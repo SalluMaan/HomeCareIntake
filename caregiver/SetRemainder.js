@@ -16,9 +16,10 @@ import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import IconAnt1 from "react-native-vector-icons/AntDesign";
 import * as Font from "expo-font";
-import Moment from "moment";
 import { CareSetReminderPath } from "./constantCaregiver";
 import axios from "axios";
+import Moment from "moment";
+
 import {
   Container,
   Header,

@@ -120,7 +120,7 @@ export default class Incident2 extends React.Component {
   getReports = () => {
     console.log("ID", this.state.careID);
     axios
-      .get(GetAllReportsPath + "1")
+      .get(GetAllReportsPath + this.state.careID)
       .then((res) => {
         console.log("RSp:", res.data);
         const data = res.data["notes"];
@@ -141,6 +141,18 @@ export default class Incident2 extends React.Component {
       refreshing: false,
     });
   };
+  checkEmptyInput() {
+    if (
+      this.state.title === "" ||
+      this.state.message === "" ||
+      this.state.file === "" ||
+      this.state.file === null
+    ) {
+      alert("Error!Dont Leave Blank Fields!");
+      return false;
+    }
+    return true;
+  }
 
   onClickListener = () => {
     const Title = this.state.title;
@@ -152,32 +164,47 @@ export default class Incident2 extends React.Component {
       name: "FileName-" + ID,
     };
 
+    if (Title === "") {
+      console.log("Title Empty");
+    }
+
     console.log("File", obj);
 
-    const formData = new FormData();
-    formData.append("caregiver_id", ID);
-    formData.append("title", Title);
-    formData.append("message", Message);
-    formData.append("notes", obj);
-    console.log("Fomr Data", formData);
+    if (
+      Title !== "" &&
+      Message !== "" &&
+      obj.uri !== "" &&
+      Title !== undefined &&
+      Message !== undefined &&
+      obj.uri !== undefined
+    ) {
+      const formData = new FormData();
+      formData.append("caregiver_id", ID);
+      formData.append("title", Title);
+      formData.append("message", Message);
+      formData.append("notes", obj);
+      console.log("Fomr Data", formData);
 
-    axios
-      .post(AddNewReportPath, formData)
-      .then((res) => {
-        console.log("Response REport ADD", res.data);
-        Alert.alert("Response", res.data.message);
-        this.setState({
-          title: "",
-          message: "",
-          file: "",
-          typeFile: "",
-          fileName: "",
+      axios
+        .post(AddNewReportPath, formData)
+        .then((res) => {
+          console.log("Response REport ADD", res.data);
+          Alert.alert("Response", res.data.message);
+          this.setState({
+            title: "",
+            message: "",
+            file: "",
+            typeFile: "",
+            fileName: "",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert("Response", "Error while Adding Reports");
         });
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert.alert("Response", "Error while Adding Reports");
-      });
+    } else {
+      Alert.alert("Response", "Error!Dont Leave Blank Fields!");
+    }
   };
 
   render() {
