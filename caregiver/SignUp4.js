@@ -100,6 +100,20 @@ export default class SignUp4 extends React.Component {
     });
   };
 
+  checkEmptyInput() {
+    if (
+      this.state.docName === "" ||
+      this.state.docType === "" ||
+      this.state.time === "" ||
+      this.state.file === "" ||
+      this.state.file2 === ""
+    ) {
+      alert("Error!Dont Leave Blank Fields!");
+      return false;
+    }
+    return true;
+  }
+
   onClickListener = () => {
     const DocName = this.state.docName;
     const DocType = this.state.docType;

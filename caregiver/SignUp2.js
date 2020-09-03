@@ -37,6 +37,63 @@ export default class SignUp2 extends React.Component {
     this.setState({ assetsLoaded: true });
   }
 
+  ValidateEmail(mail) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+      return true;
+    }
+    alert("You have entered an invalid email address!");
+    return false;
+  }
+
+  checkEmptyInput() {
+    if (
+      this.state.email === "" ||
+      this.state.password === "" ||
+      this.state.confirmPasword === "" ||
+      this.state.name === ""
+    ) {
+      alert("Error!Dont Leave Blank Fields!");
+      return false;
+    }
+    return true;
+  }
+
+  validatePassword(pass) {
+    if (/^.{3,}$/.test(pass)) {
+      return true;
+    }
+    alert(
+      "You have entered an invalid Password(Password contain atleast 3 characters)"
+    );
+    return false;
+  }
+  validateBothPassword(pass, confirm) {
+    if (pass === confirm) {
+      return true;
+    }
+    alert("Password and Confirm Password doesn't match!");
+    return false;
+  }
+
+  moveProps = () => {
+    if (
+      this.ValidateEmail(this.state.email) &&
+      this.checkEmptyInput() &&
+      this.validatePassword(this.state.password) &&
+      this.validatePassword(this.state.confirmPasword) &&
+      this.validateBothPassword(this.state.password, this.state.confirmPasword)
+    ) {
+      this.props.navigation.navigate("SignUp3", {
+        user: {
+          name: this.state.name,
+          email: this.state.email,
+          password: this.state.password,
+          confirm: this.state.confirmPasword,
+        },
+      });
+    }
+  };
+
   render() {
     const { assetsLoaded } = this.state;
     if (assetsLoaded) {
@@ -247,18 +304,7 @@ export default class SignUp2 extends React.Component {
               />
             </Item>
 
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("SignUp3", {
-                  user: {
-                    name: this.state.name,
-                    email: this.state.email,
-                    password: this.state.password,
-                    confirm: this.state.confirmPasword,
-                  },
-                })
-              }
-            >
+            <TouchableOpacity onPress={() => this.moveProps()}>
               <Button
                 style={{
                   marginTop: 23,

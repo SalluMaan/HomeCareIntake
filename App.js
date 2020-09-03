@@ -118,6 +118,7 @@ import OTPCare from "./caregiver/OTPCare";
 import ResetPassCare from "./caregiver/ResetPassCare";
 import EditReminder from "./caregiver/EditReminder";
 import CarePayroll from "./caregiver/CarePayroll";
+import Quiz from "./caregiver/quiz";
 
 console.disableYellowBox = true;
 
@@ -301,6 +302,7 @@ const FeedStack2 = createStackNavigator({
   IntakeCoList2: { screen: IntakeCoList2 },
   ScheduleDet3: { screen: ScheduleDet3Care },
   WorkHistory2: { screen: WorkHistory2Care },
+  Quiz: { screen: Quiz },
   NotificationCare: { screen: NotificationCare },
   Maps: {
     screen: Maps,
@@ -419,16 +421,21 @@ const drawNav2 = createDrawerNavigator({
     },
   },
 
-  TestCert1: { screen: TestCert1Care },
+  // TestCert1: { screen: TestCert1Care },
   TestCert2: { screen: TestCert2Care },
-  TestCert3: { screen: TestCert3Care },
+  // TestCert3: { screen: TestCert3Care },
 
-  // Reminder2: { screen: HomePage2 },
-  // Reminder4: { screen: HomePage4 },
+  // CareQuiz: { screen: Quiz },
+  QuizStart: { screen: CareQuiz },
   // Reminder: { screen: HomePage3 },
 
   // ContactUs: {screen:ContactUs},
-
+  GeneralFAQ: {
+    screen: GeneralFAQ,
+    navigationOptions: ({ navigation }) => ({
+      headerShown: false,
+    }),
+  },
   // CrmScreen: {screen:CrmScreen},
 });
 

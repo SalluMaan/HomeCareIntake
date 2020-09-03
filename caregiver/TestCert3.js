@@ -69,12 +69,16 @@ export default class TestCert3Care extends React.Component {
               style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}
             >
               <View>
-                <IconAnt1
-                  name="left"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginRight: 5 }}
-                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate("TestCert2")}
+                >
+                  <IconAnt1
+                    name="left"
+                    size={20}
+                    color="#A4A4A4"
+                    style={{ marginRight: 5 }}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 

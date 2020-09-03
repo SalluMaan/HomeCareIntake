@@ -48,6 +48,32 @@ export default class SignUp3 extends React.Component {
     this.setState({ assetsLoaded: true });
   }
 
+  checkEmptyInput() {
+    if (
+      this.state.phoneNumber === "" ||
+      this.state.city === "" ||
+      this.state.address === "" ||
+      this.state.zipCode === ""
+    ) {
+      alert("Error!Dont Leave Blank Fields!");
+      return false;
+    }
+    return true;
+  }
+  moveProps = (user) => {
+    if (this.checkEmptyInput()) {
+      this.props.navigation.navigate("SignUp4", {
+        user: {
+          ...user,
+          phone: this.state.phoneNumber,
+          city: this.state.city,
+          address: this.state.address,
+          zipcode: this.state.zipCode,
+        },
+      });
+    }
+  };
+
   render() {
     const { user } = this.props.navigation.state.params;
     console.log("User :", user);
@@ -179,19 +205,7 @@ export default class SignUp3 extends React.Component {
               />
             </Item>
 
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("SignUp4", {
-                  user: {
-                    ...user,
-                    phone: this.state.phoneNumber,
-                    city: this.state.city,
-                    address: this.state.address,
-                    zipcode: this.state.zipCode,
-                  },
-                })
-              }
-            >
+            <TouchableOpacity onPress={() => this.moveProps(user)}>
               <Button
                 style={{
                   marginTop: 53,

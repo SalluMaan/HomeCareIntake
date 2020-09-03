@@ -42,6 +42,11 @@ export default class TestCert2Care extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      bgMeeting: "#fff",
+      bgSchedule: "#FEF2F5",
+      clrMeeting: "#a4a4a4",
+      clrSchedule: "#FF4B7D",
+      clicked: false,
       selected: undefined,
       token: "",
       assetsLoaded: false,
@@ -137,6 +142,17 @@ export default class TestCert2Care extends React.Component {
       });
   };
 
+  getResources = () => {
+    this.setState({
+      clicked: true,
+      bgSchedule: "#fff",
+      bgMeeting: "#FEF2F5",
+      clrMeeting: "#FF4B7D",
+      clrSchedule: "#a4a4a4",
+      // refreshing: false,
+    });
+  };
+
   render() {
     const { assetsLoaded } = this.state;
     if (assetsLoaded) {
@@ -147,12 +163,16 @@ export default class TestCert2Care extends React.Component {
               style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}
             >
               <View>
-                <IconAnt1
-                  name="left"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginRight: 5 }}
-                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <IconAnt1
+                    name="left"
+                    size={20}
+                    color="#A4A4A4"
+                    style={{ marginRight: 5 }}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -170,24 +190,14 @@ export default class TestCert2Care extends React.Component {
                 marginTop: 30,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginLeft: 25,
-                  alignSelf: "center",
-                  fontWeight: "600",
-                  color: "#A4A4A4",
-                }}
-              >
-                Resources
-              </Text>
               <Button
+                onPress={() => this.getResources()}
                 style={{
                   alignSelf: "center",
-                  width: 140,
+                  width: 150,
                   height: 38,
-                  marginLeft: 50,
-                  backgroundColor: "#FEF2F5",
+                  marginLeft: 10,
+                  backgroundColor: this.state.bgMeeting,
                   borderRadius: 4,
                   borderWidth: 1,
                   textAlign: "center",
@@ -198,353 +208,565 @@ export default class TestCert2Care extends React.Component {
                     fontSize: 10,
                     marginLeft: 5,
                     fontWeight: "600",
-                    color: "#FF4B7D",
+                    color: this.state.clrMeeting,
+                  }}
+                >
+                  Resources
+                </Text>
+              </Button>
+              <Button
+                onPress={() =>
+                  this.setState({
+                    clicked: false,
+                    bgMeeting: "#fff",
+                    bgSchedule: "#FEF2F5",
+                    clrMeeting: "#a4a4a4",
+                    clrSchedule: "#FF4B7D",
+                  })
+                }
+                style={{
+                  alignSelf: "center",
+                  width: 150,
+                  height: 38,
+                  marginLeft: 10,
+                  backgroundColor: this.state.bgSchedule,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  textAlign: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 10,
+                    marginLeft: 5,
+                    fontWeight: "600",
+                    color: this.state.clrSchedule,
                   }}
                 >
                   Certifications
                 </Text>
               </Button>
             </View>
-
-            <View style={{ flexDirection: "row", marginTop: 50 }}>
-              <TouchableOpacity
-              // onPress={() => this.props.navigation.navigate("TestCert3")}
-              >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    marginTop: 0,
-                    marginLeft: 16,
-                    fontWeight: "600",
-                    color: "#141414",
-                  }}
-                >
-                  Certifications
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.pickDocument()}>
-                <IconAnt1
-                  name="addfile"
-                  size={30}
-                  color="#FF4B7D"
-                  style={{ marginTop: 0, marginLeft: 180 }}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{ height: 130 }}>
-              {this.state.pick ? (
+            {this.state.clicked ? (
+              <View>
                 <TouchableOpacity
-                  onPress={() => alert(this.state.fileObject.certificate)}
+                  onPress={() => this.props.navigation.navigate("TestCert2")}
                 >
-                  <IconAnt1
-                    name="addfile"
-                    size={30}
-                    color="#FF4B7D"
-                    style={{ marginTop: "5%", marginHorizontal: "8%" }}
-                  />
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginTop: 200,
+                      marginTop: 19,
+                      marginLeft: 20,
+                      fontWeight: "400",
+                      color: "#434343",
+                    }}
+                  >
+                    Training Videos
+                  </Text>
                 </TouchableOpacity>
-              ) : null}
-            </View>
 
-            <View
-              style={{
-                backgroundColor: "#7D7D7D",
-                borderWidth: 0.5,
-                marginTop: 10,
-              }}
-            ></View>
-
-            <View style={{ flexDirection: "row", marginTop: 30 }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginTop: 0,
-                  marginLeft: 16,
-                  fontWeight: "600",
-                  color: "#141414",
-                }}
-              >
-                Medical Test Report
-              </Text>
-              <IconAnt1
-                name="addfile"
-                size={30}
-                color="#FF4B7D"
-                style={{ marginTop: 0, marginLeft: 150 }}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                width: 334,
-                height: 126,
-                backgroundColor: "#00000029",
-                borderRadius: 7,
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              <View>
-                <IconAnt1
-                  name="addfile"
-                  size={60}
-                  color="#FF4B7D"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                />
-                <Text
+                <View
                   style={{
-                    fontSize: 14,
-                    marginLeft: 10,
+                    flexDirection: "row",
+                    width: 334,
+                    height: 192,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
                     alignSelf: "center",
-                    marginTop: 0,
-                    fontWeight: "600",
-                    color: "#434343",
-                  }}
-                >
-                  Docs
-                </Text>
-              </View>
-              <View style={{ width: 160 }}>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    marginLeft: 14,
                     marginTop: 20,
-                    fontWeight: "600",
-                    color: "#434343",
                   }}
-                >
-                  HIV Test
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-              </View>
-            </View>
+                ></View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                width: 334,
-                height: 126,
-                backgroundColor: "#00000029",
-                borderRadius: 7,
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              <View>
-                <IconAnt1
-                  name="addfile"
-                  size={60}
-                  color="#FF4B7D"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                />
-                <Text
+                <View
                   style={{
-                    fontSize: 14,
-                    marginLeft: 10,
+                    flexDirection: "row",
+                    width: 334,
+                    height: 192,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
                     alignSelf: "center",
-                    marginTop: 0,
-                    fontWeight: "600",
-                    color: "#434343",
-                  }}
-                >
-                  Docs
-                </Text>
-              </View>
-              <View style={{ width: 160 }}>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    marginLeft: 14,
                     marginTop: 20,
-                    fontWeight: "600",
-                    color: "#434343",
                   }}
                 >
-                  HIV Test
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-              </View>
-            </View>
+                  <Image
+                    source={require("../assets/img2.png")}
+                    style={{
+                      width: 112,
+                      height: 136,
+                      marginTop: 20,
+                      marginLeft: 12,
+                    }}
+                  ></Image>
 
-            <View
-              style={{
-                flexDirection: "row",
-                width: 334,
-                height: 126,
-                backgroundColor: "#00000029",
-                borderRadius: 7,
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              <View>
-                <IconAnt1
-                  name="addfile"
-                  size={60}
-                  color="#FF4B7D"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    marginTop: 0,
-                    fontWeight: "600",
-                    color: "#434343",
-                  }}
-                >
-                  Docs
-                </Text>
-              </View>
-              <View style={{ width: 160 }}>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    marginLeft: 14,
-                    marginTop: 20,
-                    fontWeight: "600",
-                    color: "#434343",
-                  }}
-                >
-                  HIV Test
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-              </View>
-            </View>
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      The Caregiver's Handbook
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Lorem ipsum dolor sit amet,consetetur sadipscing elitr
+                    </Text>
+                    <Button
+                      style={{
+                        marginTop: 23,
+                        width: 127,
+                        height: 40,
+                        alignSelf: "center",
+                        backgroundColor: "#B20838",
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        textAlign: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          alignSelf: "center",
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        Download
+                      </Text>
+                    </Button>
+                  </View>
+                </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                width: 334,
-                height: 126,
-                backgroundColor: "#00000029",
-                borderRadius: 7,
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-            >
-              <View>
-                <IconAnt1
-                  name="addfile"
-                  size={60}
-                  color="#FF4B7D"
-                  style={{ marginTop: 20, marginLeft: 20 }}
-                />
-                <Text
+                <View
                   style={{
-                    fontSize: 14,
-                    marginLeft: 10,
+                    flexDirection: "row",
+                    width: 334,
+                    height: 192,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
                     alignSelf: "center",
-                    marginTop: 0,
-                    fontWeight: "600",
-                    color: "#434343",
-                  }}
-                >
-                  Docs
-                </Text>
-              </View>
-              <View style={{ width: 160 }}>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    marginLeft: 14,
                     marginTop: 20,
-                    fontWeight: "600",
-                    color: "#434343",
                   }}
                 >
-                  HIV Test
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginLeft: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#A4A4A4",
-                  }}
-                >
-                  Tested Date: July 29, 2020
-                </Text>
+                  <Image
+                    source={require("../assets/img2.png")}
+                    style={{
+                      width: 112,
+                      height: 136,
+                      marginTop: 20,
+                      marginLeft: 12,
+                    }}
+                  ></Image>
+
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      The Caregiver's Handbook
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Lorem ipsum dolor sit amet,consetetur sadipscing elitr
+                    </Text>
+                    <Button
+                      style={{
+                        marginTop: 23,
+                        width: 127,
+                        height: 40,
+                        alignSelf: "center",
+                        backgroundColor: "#B20838",
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        textAlign: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          alignSelf: "center",
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        Download
+                      </Text>
+                    </Button>
+                  </View>
+                </View>
               </View>
-            </View>
+            ) : (
+              <View>
+                <View style={{ flexDirection: "row", marginTop: 50 }}>
+                  <TouchableOpacity
+                  // onPress={() => this.props.navigation.navigate("TestCert3")}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        marginTop: 0,
+                        marginLeft: 16,
+                        fontWeight: "600",
+                        color: "#141414",
+                      }}
+                    >
+                      Certifications
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.pickDocument()}>
+                    <IconAnt1
+                      name="addfile"
+                      size={30}
+                      color="#FF4B7D"
+                      style={{ marginTop: 0, marginLeft: 180 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ height: 130 }}>
+                  {this.state.pick ? (
+                    <TouchableOpacity
+                      onPress={() => alert(this.state.fileObject.certificate)}
+                    >
+                      <IconAnt1
+                        name="addfile"
+                        size={30}
+                        color="#FF4B7D"
+                        style={{ marginTop: "5%", marginHorizontal: "8%" }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+
+                <View
+                  style={{
+                    backgroundColor: "#7D7D7D",
+                    borderWidth: 0.5,
+                    marginTop: 10,
+                  }}
+                ></View>
+
+                <View style={{ flexDirection: "row", marginTop: 30 }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      marginTop: 0,
+                      marginLeft: 16,
+                      fontWeight: "600",
+                      color: "#141414",
+                    }}
+                  >
+                    Medical Test Report
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate("TestCert3")}
+                  >
+                    <IconAnt1
+                      name="addfile"
+                      size={30}
+                      color="#FF4B7D"
+                      style={{ marginTop: 0, marginLeft: 150 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: 334,
+                    height: 126,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <View>
+                    <IconAnt1
+                      name="addfile"
+                      size={60}
+                      color="#FF4B7D"
+                      style={{ marginTop: 20, marginLeft: 20 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 0,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      Docs
+                    </Text>
+                  </View>
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        marginLeft: 14,
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      HIV Test
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: 334,
+                    height: 126,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <View>
+                    <IconAnt1
+                      name="addfile"
+                      size={60}
+                      color="#FF4B7D"
+                      style={{ marginTop: 20, marginLeft: 20 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 0,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      Docs
+                    </Text>
+                  </View>
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        marginLeft: 14,
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      HIV Test
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: 334,
+                    height: 126,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <View>
+                    <IconAnt1
+                      name="addfile"
+                      size={60}
+                      color="#FF4B7D"
+                      style={{ marginTop: 20, marginLeft: 20 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 0,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      Docs
+                    </Text>
+                  </View>
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        marginLeft: 14,
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      HIV Test
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: 334,
+                    height: 126,
+                    backgroundColor: "#00000029",
+                    borderRadius: 7,
+                    alignSelf: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <View>
+                    <IconAnt1
+                      name="addfile"
+                      size={60}
+                      color="#FF4B7D"
+                      style={{ marginTop: 20, marginLeft: 20 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        marginTop: 0,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      Docs
+                    </Text>
+                  </View>
+                  <View style={{ width: 160 }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        marginLeft: 14,
+                        marginTop: 20,
+                        fontWeight: "600",
+                        color: "#434343",
+                      }}
+                    >
+                      HIV Test
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        alignSelf: "center",
+                        fontWeight: "600",
+                        color: "#A4A4A4",
+                      }}
+                    >
+                      Tested Date: July 29, 2020
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
           </ScrollView>
         </View>
       );

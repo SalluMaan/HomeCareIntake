@@ -40,4 +40,9 @@ export const AddCertificatePath =
   "https://aplushome.facebhoook.com/api/certificate/";
 export const GetCertificatePath =
   "https://aplushome.facebhoook.com/api/getcertificate/";
+export const GetQuizPath =
+  "https://aplushome.facebhoook.com/api/getcertificate/";
+export const GetFAQsPath =
+  "https://aplushome.facebhoook.com/api/getcertificate/";
+
 //   https://aplushome.facebhoook.com/api/updatecaregiverprofile/2
