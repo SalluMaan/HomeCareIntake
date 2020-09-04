@@ -9,13 +9,16 @@ import {
   Dimensions,
   Image,
   NativeModules,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Assets } from "react-navigation-stack";
 import { ScrollView } from "react-native-gesture-handler";
-const { StatusBarManager } = NativeModules;
-var windowWidth = Dimensions.get("window").width;
-const STATUSBAR_HEIGHT = Platform.OS === "ios" ? 25 : StatusBarManager.HEIGHT;
+import { QuizSubmitPath } from "./constantCaregiver";
+import axios from "axios";
+// const { StatusBarManager } = NativeModules;
+// var windowWidth = Dimensions.get("window").width;
+// const STATUSBAR_HEIGHT = Platform.OS === "ios" ? 25 : StatusBarManager.HEIGHT;
 
 export default class Quiz extends React.Component {
   constructor(props) {
@@ -30,16 +33,66 @@ export default class Quiz extends React.Component {
       p7borderColor: "#E5E5E5",
       p8borderColor: "#E5E5E5",
       selectID: null,
+      answer: [],
     };
   }
 
+  postQuiz = (careID, answer, qsID) => {
+    const formData = new FormData();
+    formData.append("caregiver_id", careID);
+    formData.append("answer", answer);
+
+    axios
+      .post(QuizSubmitPath + qsID, formData)
+      .then((res) => {
+        Alert.alert(
+          "Server Response",
+          "Answer :" + answer + " is submitted for this Question ID:" + qsID
+        );
+        this.setState({
+          answer: null,
+          selectID: null,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   submitSingleAnswer = (qsID, answer) => {
-    console.log("QuestionID:" + qsID + "- Answer:", answer);
-    this.setState({
-      selectID: null,
-    });
+    const { quiz, careID } = this.props.navigation.state.params;
+    if (answer === null || answer === undefined || answer === "") {
+      Alert.alert("Server Response", "You havn't Selected Any Answer!");
+    } else {
+      this.postQuiz(careID, answer, qsID);
+      this.setState({
+        selectID: null,
+        p1borderColor: "#E5E5E5",
+        p2borderColor: "#E5E5E5",
+        p3borderColor: "#E5E5E5",
+        p4borderColor: "#E5E5E5",
+      });
+    }
+  };
+  submitQuiz = () => {
+    const { quiz, careID } = this.props.navigation.state.params;
+
+    if (quiz.length === this.state.answer.length) {
+      const newArr = this.state.answer;
+      newArr.sort((a, b) => a.qsID < b.qsID).reverse();
+      console.log("Array Sort", newArr);
+      // const newAnswerArray=newArr.
+      this.setState({});
+    } else {
+      Alert.alert(
+        "Server Response",
+        "Complete your Quiz and Double check your Questions!"
+      );
+    }
   };
   render() {
+    const { quiz, careID } = this.props.navigation.state.params;
+    // console.log("Params:", quiz, careID, quiz.length);
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -60,194 +113,250 @@ export default class Quiz extends React.Component {
               source={require("../assets/logo2.png")}
             />
           </View>
-          <View style={{ flex: 4 }}>
-            <Text
-              style={{ fontSize: 25, fontWeight: "bold", alignSelf: "center" }}
-            >
-              Question 1
+
+          {/* ------------------------------START QUESTIONS------------------------------ */}
+
+          {quiz ? (
+            quiz.map((quest, id) => {
+              return (
+                <View key={id} style={{ flex: 4, marginTop: 25 }}>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      fontWeight: "bold",
+                      alignSelf: "center",
+                    }}
+                  >
+                    Question {id + 1}
+                  </Text>
+                  <View
+                    style={{
+                      flex: 0.5,
+                      alignItems: "center",
+                      margin: 30,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "grey",
+                        fontSize: 15,
+                        textAlign: "center",
+                      }}
+                    >
+                      {quest.question || "Question Details"}
+                    </Text>
+                  </View>
+
+                  {/* ----------------------------------------------------- */}
+                  <View
+                    style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}
+                  >
+                    <View
+                      style={{
+                        flex: 0.5,
+                        alignItems: "flex-end",
+                        marginRight: 10,
+                        marginTop: 15,
+                      }}
+                    >
+                      <Text>A.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        flex: 2,
+                        borderWidth: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        borderColor: this.state.p1borderColor,
+                        height: 45,
+                      }}
+                      onPress={() =>
+                        this.setState({
+                          p1borderColor: "#4A89F6",
+                          p2borderColor: "#E5E5E5",
+                          p3borderColor: "#E5E5E5",
+                          p4borderColor: "#E5E5E5",
+                          selectID: "A",
+                        })
+                      }
+                    >
+                      <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
+                        {quest.answer_a || "Options"}
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={{ flex: 0.3 }}></View>
+                  </View>
+                  <View
+                    style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}
+                  >
+                    <View
+                      style={{
+                        flex: 0.5,
+                        alignItems: "flex-end",
+                        marginRight: 10,
+                        marginTop: 15,
+                      }}
+                    >
+                      <Text>B.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        flex: 2,
+                        borderWidth: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        borderColor: this.state.p2borderColor,
+                        height: 45,
+                      }}
+                      onPress={() =>
+                        this.setState({
+                          p1borderColor: "#E5E5E5",
+                          p2borderColor: "#4A89F6",
+                          p3borderColor: "#E5E5E5",
+                          p4borderColor: "#E5E5E5",
+                          selectID: "B",
+                        })
+                      }
+                    >
+                      <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
+                        {quest.answer_b || "Options"}
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={{ flex: 0.3 }}></View>
+                  </View>
+                  <View
+                    style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}
+                  >
+                    <View
+                      style={{
+                        flex: 0.5,
+                        alignItems: "flex-end",
+                        marginRight: 10,
+                        marginTop: 15,
+                      }}
+                    >
+                      <Text>C.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        flex: 2,
+                        borderWidth: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        borderColor: this.state.p3borderColor,
+                        height: 45,
+                      }}
+                      onPress={() =>
+                        this.setState({
+                          p1borderColor: "#E5E5E5",
+                          p2borderColor: "#E5E5E5",
+                          p3borderColor: "#4A89F6",
+                          p4borderColor: "#E5E5E5",
+                          selectID: "C",
+                        })
+                      }
+                    >
+                      <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
+                        {quest.answer_c || "Options"}
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={{ flex: 0.3 }}></View>
+                  </View>
+                  <View
+                    style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}
+                  >
+                    <View
+                      style={{
+                        flex: 0.5,
+                        alignItems: "flex-end",
+                        marginRight: 10,
+                        marginTop: 15,
+                      }}
+                    >
+                      <Text>D.</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        flex: 2,
+                        borderWidth: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        borderColor: this.state.p4borderColor,
+                        height: 45,
+                      }}
+                      onPress={() =>
+                        this.setState({
+                          p1borderColor: "#E5E5E5",
+                          p2borderColor: "#E5E5E5",
+                          p3borderColor: "#E5E5E5",
+                          p4borderColor: "#4A89F6",
+                          selectID: "D",
+                        })
+                      }
+                    >
+                      <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
+                        {quest.answer_d || "Options"}
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={{ flex: 0.3 }}></View>
+                  </View>
+
+                  {/* ------------------------------------------------- */}
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.submitSingleAnswer(quest.id, this.state.selectID)
+                    }
+                    style={{ marginTop: 30, alignSelf: "center" }}
+                  >
+                    <Text
+                      style={{
+                        height: 30,
+                        width: 100,
+                        backgroundColor: "#B20838",
+                        color: "#fff",
+                        borderRadius: 15,
+                        textAlign: "center",
+                        paddingTop: 7,
+                        fontSize: 10,
+                      }}
+                    >
+                      Submit Answer {id + 1}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          ) : (
+            <Text style={{ margin: 25, color: "#a4a4a4" }}>
+              There is no Question......
             </Text>
-            <View
+          )}
+
+          {/* <TouchableOpacity
+            onPress={() => this.submitQuiz()}
+            style={{ marginTop: 30, alignSelf: "center" }}
+          >
+            <Text
               style={{
-                flex: 0.5,
-                alignItems: "center",
-                margin: 30,
+                height: 40,
+                width: 140,
+                backgroundColor: "#B20838",
+                color: "#fff",
+                borderRadius: 15,
+                textAlign: "center",
+                paddingTop: 8,
+                fontSize: 15,
+                marginVertical: 25,
               }}
             >
-              <Text
-                style={{ color: "grey", fontSize: 15, textAlign: "center" }}
-              >
-                Lorem ipsum is a pseudo-Latin text used in web design,
-                typography, layout, and printing in place of English to
-                emphasise design elements over content. It’s also called
-                placeholder (or filler) text. It’s a convenient tool for
-                mock-ups.
-              </Text>
-            </View>
-
-            {/* ----------------------------------------------------- */}
-            <View style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}>
-              <View
-                style={{
-                  flex: 0.5,
-                  alignItems: "flex-end",
-                  marginRight: 10,
-                  marginTop: 15,
-                }}
-              >
-                <Text>A.</Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flex: 2,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  borderColor: this.state.p1borderColor,
-                  height: 45,
-                }}
-                onPress={() =>
-                  this.setState({
-                    p1borderColor: "#4A89F6",
-                    p2borderColor: "#E5E5E5",
-                    p3borderColor: "#E5E5E5",
-                    p4borderColor: "#E5E5E5",
-                    selectID: 1,
-                  })
-                }
-              >
-                <Text style={{ fontSize: 15, color: "#A4A4A4" }}>Perfect</Text>
-              </TouchableOpacity>
-              <View style={{ flex: 0.3 }}></View>
-            </View>
-            <View style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}>
-              <View
-                style={{
-                  flex: 0.5,
-                  alignItems: "flex-end",
-                  marginRight: 10,
-                  marginTop: 15,
-                }}
-              >
-                <Text>B.</Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flex: 2,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  borderColor: this.state.p2borderColor,
-                  height: 45,
-                }}
-                onPress={() =>
-                  this.setState({
-                    p1borderColor: "#E5E5E5",
-                    p2borderColor: "#4A89F6",
-                    p3borderColor: "#E5E5E5",
-                    p4borderColor: "#E5E5E5",
-                    selectID: 2,
-                  })
-                }
-              >
-                <Text style={{ fontSize: 15, color: "#A4A4A4" }}>Perfect</Text>
-              </TouchableOpacity>
-              <View style={{ flex: 0.3 }}></View>
-            </View>
-            <View style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}>
-              <View
-                style={{
-                  flex: 0.5,
-                  alignItems: "flex-end",
-                  marginRight: 10,
-                  marginTop: 15,
-                }}
-              >
-                <Text>C.</Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flex: 2,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  borderColor: this.state.p3borderColor,
-                  height: 45,
-                }}
-                onPress={() =>
-                  this.setState({
-                    p1borderColor: "#E5E5E5",
-                    p2borderColor: "#E5E5E5",
-                    p3borderColor: "#4A89F6",
-                    p4borderColor: "#E5E5E5",
-                    selectID: 3,
-                  })
-                }
-              >
-                <Text style={{ fontSize: 15, color: "#A4A4A4" }}>Perfect</Text>
-              </TouchableOpacity>
-              <View style={{ flex: 0.3 }}></View>
-            </View>
-            <View style={{ flex: 0.3, flexDirection: "row", marginBottom: 5 }}>
-              <View
-                style={{
-                  flex: 0.5,
-                  alignItems: "flex-end",
-                  marginRight: 10,
-                  marginTop: 15,
-                }}
-              >
-                <Text>D.</Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flex: 2,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  borderColor: this.state.p4borderColor,
-                  height: 45,
-                }}
-                onPress={() =>
-                  this.setState({
-                    p1borderColor: "#E5E5E5",
-                    p2borderColor: "#E5E5E5",
-                    p3borderColor: "#E5E5E5",
-                    p4borderColor: "#4A89F6",
-                    selectID: 4,
-                  })
-                }
-              >
-                <Text style={{ fontSize: 15, color: "#A4A4A4" }}>Perfect</Text>
-              </TouchableOpacity>
-              <View style={{ flex: 0.3 }}></View>
-            </View>
-
-            {/* ------------------------------------------------- */}
-
-            <TouchableOpacity
-              onPress={() => this.submitSingleAnswer(35, this.state.selectID)}
-              style={{ marginTop: 15, alignSelf: "center" }}
-            >
-              <Text
-                style={{
-                  height: 30,
-                  width: 100,
-                  backgroundColor: "#B20838",
-                  color: "#fff",
-                  borderRadius: 15,
-                  textAlign: "center",
-                  paddingTop: 7,
-                  fontSize: 10,
-                }}
-              >
-                Submit Answer 1
-              </Text>
-            </TouchableOpacity>
-          </View>
+              Submit Quiz
+            </Text>
+          </TouchableOpacity> */}
 
           {/* {/* <View style={{ flex: 0.3, flexDirection: "row", marginBottom: 15 }}>
               <View

@@ -40,9 +40,17 @@ export const AddCertificatePath =
   "https://aplushome.facebhoook.com/api/certificate/";
 export const GetCertificatePath =
   "https://aplushome.facebhoook.com/api/getcertificate/";
-export const GetQuizPath =
-  "https://aplushome.facebhoook.com/api/getcertificate/";
-export const GetFAQsPath =
-  "https://aplushome.facebhoook.com/api/getcertificate/";
+export const GetFAQsPath = "https://aplushome.facebhoook.com/api/getfaq";
+export const GetQuizPath = "https://aplushome.facebhoook.com/api/getquiz";
+export const QuizSubmitPath = "https://aplushome.facebhoook.com/api/quiz/";
+// export const QuizSubmitPath = "https://aplushome.facebhoook.com/api/quiz/";
+export const AddMedicalReportPath =
+  "https://aplushome.facebhoook.com/api/addmedicalreport/";
+export const GetMedicalReportPath =
+  "https://aplushome.facebhoook.com/api/getmedicalreport/";
+export const GetSurveyPath = "https://aplushome.facebhoook.com/api/getsurvey";
+export const PostSurveyPath = "https://aplushome.facebhoook.com/api/survey/";
 
-//   https://aplushome.facebhoook.com/api/updatecaregiverprofile/2
+// https://aplushome.facebhoook.com/api/survey/3
+
+// https://aplushome.facebhoook.com/api/addmedicalreport/1

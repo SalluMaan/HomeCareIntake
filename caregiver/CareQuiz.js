@@ -50,7 +50,7 @@ export default class CareQuiz extends React.Component {
     await Font.loadAsync({
       proximanova: require("../assets/fonts/proximanova.otf"),
     });
-    // this.getData()
+    this.getData();
     this.setState({ assetsLoaded: true });
   }
 
@@ -73,14 +73,13 @@ export default class CareQuiz extends React.Component {
 
   getQuiz = () => {
     axios
-      .get(GetQuizPath + this.state.token)
+      .get(GetQuizPath)
       .then((res) => {
-        console.log("QUIZ GET:", res.data);
-
-        // this.setState({
-        //   fileObject: obj,
-        //   pick: true,
-        // });
+        console.log("QUIZ GET:", res.data["Quiz"]);
+        const data = res.data["Quiz"];
+        this.setState({
+          quiz: data,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -145,7 +144,7 @@ export default class CareQuiz extends React.Component {
                 }}
               >
                 Friday, March 26, 2020
-                {/* {moment(schedule.date, "YYYY-MM-DD").format("dddd, MMMM D, YYYY")} */}
+                {/* {moment(Date.now(), "YYYY-MM-DD").format("dddd, MMMM D, YYYY")} */}
               </Text>
               <Text
                 style={{
@@ -156,7 +155,7 @@ export default class CareQuiz extends React.Component {
                   color: "#434343",
                 }}
               >
-                Title goes here
+                {"Quiz For Caregiver"}
               </Text>
               <Text
                 style={{
@@ -167,12 +166,15 @@ export default class CareQuiz extends React.Component {
                   color: "#7D7D7D",
                 }}
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                vel metus ornare urna gravida pellentesque quis eget urna. Sed
-                tortor orci, aliquam nec sapien non, tempor tristique libero.
+                Let's participate in the Quiz
               </Text>
               <Button
-                onPress={() => this.props.navigation.navigate("Quiz")}
+                onPress={() =>
+                  this.props.navigation.navigate("Quiz", {
+                    quiz: this.state.quiz,
+                    careID: this.state.token,
+                  })
+                }
                 style={{
                   marginTop: 23,
                   marginBottom: 50,

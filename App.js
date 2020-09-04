@@ -119,6 +119,7 @@ import ResetPassCare from "./caregiver/ResetPassCare";
 import EditReminder from "./caregiver/EditReminder";
 import CarePayroll from "./caregiver/CarePayroll";
 import Quiz from "./caregiver/quiz";
+import WeeklySurveryLoop from "./caregiver/WeeklySurveyLoop";
 
 console.disableYellowBox = true;
 
@@ -325,6 +326,7 @@ const FeedStack2 = createStackNavigator({
   WeeklySurvery2: { screen: WeeklySurvery2 },
   WeeklySurvery3: { screen: WeeklySurvery3 },
   WeeklySurvery4: { screen: WeeklySurvery4 },
+  WeeklySurveyLoop: { screen: WeeklySurveryLoop },
   Thankyou: { screen: Thankyou },
 });
 
@@ -385,6 +387,7 @@ const drawNav = createDrawerNavigator({
       title: "Logout",
     },
   },
+
   // ReferralsScreen: { screen: ReferralsScreen },
   // SkillsCert: { screen: SkillsCert },
   // SchDetComp: { screen: SchDetComp },
@@ -422,11 +425,25 @@ const drawNav2 = createDrawerNavigator({
   },
 
   // TestCert1: { screen: TestCert1Care },
-  TestCert2: { screen: TestCert2Care },
+  TestCert2: {
+    screen: TestCert2Care,
+    navigationOptions: {
+      title: "Test & Certifications",
+    },
+  },
   // TestCert3: { screen: TestCert3Care },
 
   // CareQuiz: { screen: Quiz },
-  QuizStart: { screen: CareQuiz },
+  QuizStart: {
+    screen: CareQuiz,
+    navigationOptions: {
+      title: "CareQuiz",
+    },
+  },
+  WeeklySurvery1: { screen: WeeklySurvery1 },
+  WeeklySurvery2: { screen: WeeklySurvery2 },
+  WeeklySurvery3: { screen: WeeklySurvery3 },
+  WeeklySurvery4: { screen: WeeklySurvery4 },
   // Reminder: { screen: HomePage3 },
 
   // ContactUs: {screen:ContactUs},
@@ -434,6 +451,7 @@ const drawNav2 = createDrawerNavigator({
     screen: GeneralFAQ,
     navigationOptions: ({ navigation }) => ({
       headerShown: false,
+      title: "FAQs",
     }),
   },
   // CrmScreen: {screen:CrmScreen},

@@ -46,7 +46,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 YellowBox.ignoreWarnings(["Remote debugger"]);
 
-export default class WeeklySurvery3 extends React.Component {
+export default class WeeklySurveryLoop extends React.Component {
   constructor(props) {
     super(props);
     YellowBox.ignoreWarnings([
@@ -65,8 +65,9 @@ export default class WeeklySurvery3 extends React.Component {
     option2: false,
     option3: false,
     option4: false,
-    survey: "",
-    careID: "",
+    survey: this.props.navigation.state.params.survey,
+    careID: this.props.navigation.state.params.careID,
+    objPicker: this.props.navigation.state.params.objPicker,
   };
 
   async componentDidMount() {
@@ -108,6 +109,7 @@ export default class WeeklySurvery3 extends React.Component {
   };
 
   postSurvey = (careID, answer, qsID) => {
+    let objPicker2 = this.state.objPicker;
     const formData = new FormData();
     formData.append("caregiver_id", careID);
     formData.append("answer", answer);
@@ -117,20 +119,34 @@ export default class WeeklySurvery3 extends React.Component {
       .then((res) => {
         console.log("Res Survey:", res.data);
         Alert.alert("Server Response", res.data.success);
+        objPicker2 = this.state.objPicker + 1;
+        console.log("Picker ADD", objPicker2);
         this.setState({
           answer: null,
           selectID: null,
+          objPicker: objPicker2,
         });
       })
       .catch((err) => {
         console.log(err);
       });
-    if (this.state.survey.length > 0) {
+
+    if (this.state.survey.length > objPicker2) {
+      //   console.log("Lenght Survey:", this.state.survey.length);
+      //   const objPicker2 = this.state.objPicker + 1;
+      //   console.log("Lenght OBJ PICKER:", objPicker2);
+      console.log(" IF" + this.state.survey.length + objPicker2);
       this.props.navigation.navigate("WeeklySurveyLoop", {
         survey: this.state.survey,
-        objPicker: 1,
+        objPicker: this.state.objPicker,
         careID: this.state.careID,
       });
+    } else if (
+      this.state.survey.length === objPicker2 ||
+      this.state.survey.length < objPicker2
+    ) {
+      alert("ELSE IF");
+      this.props.navigation.navigate("Thankyou");
     }
   };
 
@@ -168,7 +184,7 @@ export default class WeeklySurvery3 extends React.Component {
 
   render() {
     const { assetsLoaded } = this.state;
-    const object = this.state.survey[0];
+    const object = this.state.survey[this.state.objPicker];
     console.log("Object:", object);
     if (assetsLoaded) {
       return (
@@ -287,7 +303,6 @@ export default class WeeklySurvery3 extends React.Component {
                 >
                   Question
                 </Text>
-
                 <Text
                   style={{
                     fontSize: 15,
@@ -299,7 +314,6 @@ export default class WeeklySurvery3 extends React.Component {
                 >
                   {object.survey_question || "Questions"}
                 </Text>
-
                 <View style={{ marginTop: 15, marginLeft: 21 }}>
                   <View style={{ marginLeft: 0, flexDirection: "row" }}>
                     <Radio
@@ -395,18 +409,6 @@ export default class WeeklySurvery3 extends React.Component {
                     </Text>
                   </View>
                 </View>
-
-                {/* <Text style={{fontSize:15,marginTop:20,marginLeft:21,fontWeight:'600',color:'#434343'}}>How did you feel about the service?</Text> */}
-
-                {/* <View style={{marginLeft:21,flexDirection:'row'}}>
-          
-        <IconAnt3 name="star" size={30} color='#E5E5E5' style={{marginTop:15, marginLeft:0}}/>
-        <IconAnt3 name="star" size={30} color='#E5E5E5' style={{marginTop:15, marginLeft:10}}/>
-        <IconAnt3 name="star" size={30} color='#E5E5E5' style={{marginTop:15, marginLeft:10}}/>
-        <IconAnt3 name="star" size={30} color='#E5E5E5' style={{marginTop:15, marginLeft:10}}/>
-        <IconAnt3 name="star" size={30} color='#E5E5E5' style={{marginTop:15, marginLeft:10}}/>
-        </View> */}
-
                 <TouchableOpacity
                   onPress={() =>
                     // this.props.navigation.navigate("WeeklySurvery4")

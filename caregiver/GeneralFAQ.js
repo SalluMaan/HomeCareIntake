@@ -15,6 +15,10 @@ import FAQ1 from "./FAQ1";
 import FAQ2 from "./FAQ2";
 import IconAnt1 from "react-native-vector-icons/AntDesign";
 import { color } from "react-native-reanimated";
+import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
+import { GetFAQsPath } from "./constantCaregiver";
+
 export default class GeneralFAQ extends Component {
   constructor(props) {
     super(props);
@@ -22,37 +26,22 @@ export default class GeneralFAQ extends Component {
       selected: undefined,
       assetsLoaded: false,
       FAQs: "",
-      token: "",
     };
   }
 
-  getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem("token");
-      if (value !== null) {
-        // value previously stored
-        console.log("Token", value);
-        this.setState({
-          token: value,
-        });
-        this.getQuiz();
-      }
-    } catch (e) {
-      // error reading value
-      console.log("Reading Value Error", e);
-    }
+  componentDidMount = () => {
+    this.getFAQs();
   };
 
   getFAQs = () => {
     axios
-      .get(GetFAQsPath + this.state.token)
+      .get(GetFAQsPath)
       .then((res) => {
-        console.log("QUIZ GET:", res.data);
-
-        // this.setState({
-        //   fileObject: obj,
-        //   pick: true,
-        // });
+        // console.log("FAQS GET:", res.data["FAQs"]);
+        const data = res.data["FAQs"];
+        this.setState({
+          FAQs: data,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -87,7 +76,7 @@ export default class GeneralFAQ extends Component {
             activeTextStyle={{ color: "#FF4B7D" }}
             textStyle={{ color: "#a4a4a4" }}
           >
-            <FAQ1 />
+            <FAQ1 FAQData={this.state.FAQs} />
           </Tab>
           <Tab
             heading="VIDEOS"
