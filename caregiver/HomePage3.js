@@ -24,6 +24,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { CareAllReminderPath, DeleteReminderPath } from "./constantCaregiver";
 import axios from "axios";
 import Moment from "moment";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
 
 export default class HomePage3 extends React.Component {
   static navigationOptions = {
@@ -36,6 +38,78 @@ export default class HomePage3 extends React.Component {
     reminders: "",
     refreshing: false,
   };
+
+  getNotification = () => {
+    console.log("GETNOTIFICATIONS");
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Time's up!",
+        body: "Change sides!",
+      },
+      trigger: {
+        seconds: 2,
+      },
+    });
+  };
+
+  async registerForPushNotifications() {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+    if (status !== "granted") {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      if (status !== "granted") {
+        return;
+      }
+    }
+
+    const token = await Notifications.getExpoPushTokenAsync();
+
+    // this.subscription = Notifications.addListener(this.handleNotification);
+    console.log("token:", token);
+    this.setState({
+      token,
+    });
+    this.getNotification();
+  }
+
+  handleNotification = ({ origin, data }) => {
+    console.log(
+      `Push notification ${origin} with data: ${JSON.stringify(data)}`
+    );
+  };
+
+  getRunTimeData = () => {
+    this.getData();
+  };
+  componentDidMount = async () => {
+    this.getRunTimeData();
+    await Font.loadAsync({
+      proximanova: require("../assets/fonts/proximanova.otf"),
+    });
+    // this.getData();
+    this.registerForPushNotifications();
+
+    this.setState({ assetsLoaded: true });
+  };
+
+  UNSAFE_componentWillMount() {
+    // this.onRefresh();
+    this.getRunTimeData();
+    Notifications.addNotificationReceivedListener((notification) => {
+      console.log("Notifications MSg", notification);
+      // Alert.alert(
+      //   notification.request.content.title,
+      //   notification.request.content.body
+      // );
+    });
+  }
 
   onRefresh = () => {
     //Clear old data of the list
@@ -94,15 +168,6 @@ export default class HomePage3 extends React.Component {
         Alert.alert("Response", "Error while deleting reminder");
       });
   };
-
-  async componentDidMount() {
-    await Font.loadAsync({
-      proximanova: require("../assets/fonts/proximanova.otf"),
-    });
-    this.getData();
-
-    this.setState({ assetsLoaded: true });
-  }
 
   render() {
     const { assetsLoaded } = this.state;

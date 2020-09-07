@@ -206,7 +206,9 @@ export default class AddSchdeule extends React.Component {
     let date = newDate.getDate();
     let month = newDate.getMonth() + 1;
     let year = newDate.getFullYear();
-
+    if (date > 0 && date < 10) {
+      date = "0" + date;
+    }
     return `${year}${separator}${
       month < 10 ? `0${month}` : `${month}`
     }${separator}${date}`;

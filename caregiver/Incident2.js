@@ -40,12 +40,11 @@ export default class Incident2 extends React.Component {
     //To hide the NavigationBar from current Screen
     headerShown: false,
   };
-  state = {
-    assetsLoaded: false,
-  };
+
   constructor(props) {
     super(props);
     this.state = {
+      assetsLoaded: false,
       selected: undefined,
       bgMeeting: "#fff",
       bgSchedule: "#FEF2F5",
@@ -60,8 +59,9 @@ export default class Incident2 extends React.Component {
       message: "",
       typeFile: "",
       fileName: "",
+      chosenDate: "",
+      token: "",
     };
-    this.state = { chosenDate: new Date() };
     this.setDate = this.setDate.bind(this);
   }
   setDate(newDate) {
@@ -92,6 +92,25 @@ export default class Incident2 extends React.Component {
     this.getReports();
   };
 
+  async registerForPushNotifications() {
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+    if (status !== "granted") {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      if (status !== "granted") {
+        return;
+      }
+    }
+
+    const token = await Notifications.getExpoPushTokenAsync();
+
+    // this.subscription = Notifications.addListener(this.handleNotification);
+
+    this.setState({
+      token,
+    });
+  }
+
   getData = async () => {
     try {
       const value = await AsyncStorage.getItem("token");
@@ -113,8 +132,19 @@ export default class Incident2 extends React.Component {
     await Font.loadAsync({
       proximanova: require("../assets/fonts/proximanova.otf"),
     });
-    this.getData();
+    this.getRunTimeData();
     this.setState({ assetsLoaded: true });
+  }
+
+  getRunTimeData = () => {
+    this.props.navigation.addListener("focus", () => {
+      // do something call your wanted functions
+      this.getData();
+    });
+  };
+  UNSAFE_componentWillMount() {
+    // this.onRefresh();
+    this.getRunTimeData();
   }
 
   getReports = () => {

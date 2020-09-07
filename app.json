@@ -20,7 +20,9 @@
     "android": {
       "package": "com.HomeCare.HomeCare",
       "versionCode": 1,
-      "permissions": [ "ACCESS_FINE_LOCATION" ]
+      "permissions": ["ACCESS_FINE_LOCATION"],
+      "useNextNotificationsApi": true
+
     },
     "ios": {
       "supportsTablet": true

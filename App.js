@@ -9,6 +9,7 @@ import IconAnt from "react-native-vector-icons/Entypo";
 import IconAnt2 from "react-native-vector-icons/AntDesign";
 import IconAnt3 from "react-native-vector-icons/MaterialCommunityIcons";
 import IconAnt4 from "react-native-vector-icons/MaterialIcons";
+import IconAnt5 from "react-native-vector-icons/FontAwesome5";
 
 import LoginScreen from "./screens/LoginScreen";
 import ResetPassword from "./screens/ResetPassword";
@@ -120,6 +121,8 @@ import EditReminder from "./caregiver/EditReminder";
 import CarePayroll from "./caregiver/CarePayroll";
 import Quiz from "./caregiver/quiz";
 import WeeklySurveryLoop from "./caregiver/WeeklySurveyLoop";
+import LogoutCare from "./caregiver/LogoutCare";
+import ChatCare from "./caregiver/Chat2";
 
 console.disableYellowBox = true;
 
@@ -181,29 +184,30 @@ const TabNav2 = createBottomTabNavigator({
     },
   },
   Add: {
-    screen: AddNewClient,
+    screen: ChatCare,
     navigationOptions: {
-      tabBarLabel: "AddClient",
+      tabBarLabel: "Inbox",
       tabBarIcon: ({ tintColor }) => (
-        <IconAnt name="add-user" size={25} color="#A4A4A4" />
+        <IconAnt3 name="email-outline" size={25} color="#A4A4A4" />
       ),
     },
   },
   AddCare: {
-    screen: AddNewCareg,
+    screen: HomePage2,
     navigationOptions: {
-      tabBarLabel: "AddCarevigor",
+      tabBarLabel: "My Schedule",
       tabBarIcon: ({ tintColor }) => (
-        <IconAnt4 name="library-add" size={25} color="#A4A4A4" />
+        <IconAnt2 name="calendar" size={22} color="#A4A4A4" />
       ),
     },
   },
+
   Manage: {
-    screen: MangageSch,
+    screen: MyaccountCare,
     navigationOptions: {
-      tabBarLabel: "Manage Schedule",
+      tabBarLabel: "Account",
       tabBarIcon: ({ tintColor }) => (
-        <IconAnt2 name="calendar" size={25} color="#A4A4A4" />
+        <IconAnt5 name="user" size={25} color="#A4A4A4" />
       ),
     },
   },
@@ -304,6 +308,7 @@ const FeedStack2 = createStackNavigator({
   ScheduleDet3: { screen: ScheduleDet3Care },
   WorkHistory2: { screen: WorkHistory2Care },
   Quiz: { screen: Quiz },
+  // Chat: { screen: ChatCare },
   NotificationCare: { screen: NotificationCare },
   Maps: {
     screen: Maps,
@@ -440,10 +445,15 @@ const drawNav2 = createDrawerNavigator({
       title: "CareQuiz",
     },
   },
-  WeeklySurvery1: { screen: WeeklySurvery1 },
-  WeeklySurvery2: { screen: WeeklySurvery2 },
-  WeeklySurvery3: { screen: WeeklySurvery3 },
-  WeeklySurvery4: { screen: WeeklySurvery4 },
+  // WeeklySurvery1: { screen: WeeklySurvery1 },
+  // WeeklySurvery2: { screen: WeeklySurvery2 },
+  WeeklySurvery3: {
+    screen: WeeklySurvery3,
+    navigationOptions: {
+      title: "Weekly Survey",
+    },
+  },
+  // WeeklySurvery4: { screen: WeeklySurvery4 },
   // Reminder: { screen: HomePage3 },
 
   // ContactUs: {screen:ContactUs},
@@ -454,6 +464,13 @@ const drawNav2 = createDrawerNavigator({
       title: "FAQs",
     }),
   },
+  Logout: {
+    screen: LogoutCare,
+    navigationOptions: {
+      title: "Logout",
+    },
+  },
+
   // CrmScreen: {screen:CrmScreen},
 });
 

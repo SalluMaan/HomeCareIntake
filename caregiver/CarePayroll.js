@@ -163,7 +163,7 @@ export default class CarePayroll extends React.Component {
                 type="up-down"
                 onChange={(rate) => this.setState({ rate })}
                 value={this.state.rate}
-                initValue={parseInt(this.state.intake)}
+                initValue={parseInt(this.state.carePayroll)}
                 totalWidth={200}
                 totalHeight={50}
                 editable={false}
@@ -173,6 +173,7 @@ export default class CarePayroll extends React.Component {
                   backgroundColor: "white",
                   borderRadius: 4,
                 }}
+                minValue={parseInt(this.state.carePayroll)}
               />
               <Button
                 onPress={() => this.onClickListener()}

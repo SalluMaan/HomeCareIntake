@@ -47,9 +47,9 @@ import { updateProfile } from "../src/services/CareGiver";
 import {
   CareUpdateProfilePath,
   uploadNotesProfilePath,
+  GetCareProfilePath,
 } from "./constantCaregiver";
 YellowBox.ignoreWarnings(["Remote debugger"]);
-
 export default class MyaccountCare extends React.Component {
   constructor(props) {
     super(props);
@@ -89,24 +89,19 @@ export default class MyaccountCare extends React.Component {
   getProfile = () => {
     const Id = this.state.token;
     console.log("ID:", Id);
-    axios
-      .get(
-        "https://aplushome.facebhoook.com/api/getcaregiverprofile/" +
-          this.state.token
-      )
-      .then((res) => {
-        const data = res.data["success"];
-        console.log("Response", data);
+    axios.get(GetCareProfilePath + this.state.token).then((res) => {
+      const data = res.data["success"];
+      console.log("Response", data);
 
-        this.setState({
-          data: data,
-          fullName: data.name,
-          password: data.password,
-          phone: data.phone,
-          dob: data.dob,
-          imagePickerPath: data.image,
-        });
+      this.setState({
+        data: data,
+        fullName: data.name,
+        password: data.password,
+        phone: data.phone,
+        dob: data.dob,
+        imagePickerPath: data.image,
       });
+    });
   };
 
   getData = async () => {
@@ -263,12 +258,16 @@ export default class MyaccountCare extends React.Component {
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                <IconAnt
-                  name="left"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginTop: 15, marginLeft: 21 }}
-                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <IconAnt
+                    name="left"
+                    size={20}
+                    color="#A4A4A4"
+                    style={{ marginTop: 15, marginLeft: 21 }}
+                  />
+                </TouchableOpacity>
               </View>
 
               <View style={{ height: 280, backgroundColor: "#F3F3F3" }}>
@@ -504,12 +503,6 @@ export default class MyaccountCare extends React.Component {
                     })
                   }
                 />
-                <IconAnt
-                  name="edit"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginTop: -30, marginLeft: 270 }}
-                />
               </Item>
 
               <Item style={{ marginTop: 10 }} stackedLabel last>
@@ -520,12 +513,6 @@ export default class MyaccountCare extends React.Component {
 
                   // onChangeText={(password) => this.setState({ password })}
                 />
-                <IconAnt
-                  name="edit"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginTop: -30, marginLeft: 270 }}
-                />
               </Item>
 
               <Item style={{ marginTop: 10 }} stackedLabel last>
@@ -535,12 +522,6 @@ export default class MyaccountCare extends React.Component {
                 <Input
                   value={this.state.dob}
                   onChangeText={(dob) => this.setState({ dob })}
-                />
-                <IconAnt
-                  name="edit"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginTop: -30, marginLeft: 270 }}
                 />
               </Item>
             </Form>

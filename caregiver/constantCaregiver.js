@@ -50,7 +50,8 @@ export const GetMedicalReportPath =
   "https://aplushome.facebhoook.com/api/getmedicalreport/";
 export const GetSurveyPath = "https://aplushome.facebhoook.com/api/getsurvey";
 export const PostSurveyPath = "https://aplushome.facebhoook.com/api/survey/";
-
+export const GetCareProfilePath =
+  "https://aplushome.facebhoook.com/api/getcaregiverprofile/";
 // https://aplushome.facebhoook.com/api/survey/3
 
 // https://aplushome.facebhoook.com/api/addmedicalreport/1

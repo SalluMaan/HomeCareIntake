@@ -53,8 +53,8 @@ export default class AddSchdeule extends React.Component {
       selected: "",
       selected2: "",
       date: "",
-      caregivers: "",
-      client: "",
+      caregivers: [],
+      client: [],
       timeStart: "1:30",
       time: "2020-06-13",
       timeEnd: "2:30",
@@ -63,6 +63,7 @@ export default class AddSchdeule extends React.Component {
       hourStart: 1,
       hourEnd: 2,
       recurringButton: false,
+      assetsLoaded: false,
     };
   }
 
@@ -108,10 +109,6 @@ export default class AddSchdeule extends React.Component {
     console.log("A date has been picked: ", newdate);
     this.setState({ time: newdate });
     this.hideDateTimePicker();
-  };
-
-  state = {
-    assetsLoaded: false,
   };
 
   onChangeText = this.onChangeText.bind(this);
@@ -192,7 +189,13 @@ export default class AddSchdeule extends React.Component {
   //   timeStart: "1:30",
   //   timeEnd: "2:30",
   validateDate() {
-    if (this.state.time < this.getCurrentDate()) {
+    console.log(
+      "Valid:",
+      this.getCurrentDate().toString() > this.state.time.toString(),
+      this.getCurrentDate(),
+      this.state.time
+    );
+    if (this.getCurrentDate() >= this.state.time) {
       alert("Date must be greater.You are scheduling it for future");
       return false;
     }
@@ -216,6 +219,12 @@ export default class AddSchdeule extends React.Component {
     let date = newDate.getDate();
     let month = newDate.getMonth() + 1;
     let year = newDate.getFullYear();
+    if (date > 0 && date < 10) {
+      date = "0" + date;
+    }
+    // if (data > 0 && date < 10) {
+    //   date = "0" + date;
+    // }
 
     return `${year}${separator}${
       month < 10 ? `0${month}` : `${month}`

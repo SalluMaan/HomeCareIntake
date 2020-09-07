@@ -73,6 +73,10 @@ export default class NotificationCare extends React.Component {
 
   render() {
     const { assetsLoaded } = this.state;
+    const ValidatorArray =
+      Array.isArray(this.state.notifications) &&
+      this.state.notifications.length;
+    console.log("Not:", ValidatorArray === 0);
     if (assetsLoaded) {
       return (
         <View style={styles.container}>
@@ -124,7 +128,7 @@ export default class NotificationCare extends React.Component {
 
             {/* Notification */}
 
-            {this.state.notifications ? (
+            {ValidatorArray != 0 ? (
               this.state.notifications.map((notification, id) => {
                 return (
                   <View

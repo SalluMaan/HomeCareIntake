@@ -34,6 +34,7 @@ export default class Quiz extends React.Component {
       p8borderColor: "#E5E5E5",
       selectID: null,
       answer: [],
+      btnID: "",
     };
   }
 
@@ -168,7 +169,10 @@ export default class Quiz extends React.Component {
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 5,
-                        borderColor: this.state.p1borderColor,
+                        borderColor:
+                          this.state.btnID === quest.id
+                            ? this.state.p1borderColor
+                            : "#E5E5E5",
                         height: 45,
                       }}
                       onPress={() =>
@@ -178,6 +182,7 @@ export default class Quiz extends React.Component {
                           p3borderColor: "#E5E5E5",
                           p4borderColor: "#E5E5E5",
                           selectID: "A",
+                          btnID: quest.id,
                         })
                       }
                     >
@@ -207,7 +212,10 @@ export default class Quiz extends React.Component {
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 5,
-                        borderColor: this.state.p2borderColor,
+                        borderColor:
+                          this.state.btnID === quest.id
+                            ? this.state.p2borderColor
+                            : "#E5E5E5",
                         height: 45,
                       }}
                       onPress={() =>
@@ -217,6 +225,7 @@ export default class Quiz extends React.Component {
                           p3borderColor: "#E5E5E5",
                           p4borderColor: "#E5E5E5",
                           selectID: "B",
+                          btnID: quest.id,
                         })
                       }
                     >
@@ -246,7 +255,10 @@ export default class Quiz extends React.Component {
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 5,
-                        borderColor: this.state.p3borderColor,
+                        borderColor:
+                          this.state.btnID === quest.id
+                            ? this.state.p3borderColor
+                            : "#E5E5E5",
                         height: 45,
                       }}
                       onPress={() =>
@@ -256,6 +268,7 @@ export default class Quiz extends React.Component {
                           p3borderColor: "#4A89F6",
                           p4borderColor: "#E5E5E5",
                           selectID: "C",
+                          btnID: quest.id,
                         })
                       }
                     >
@@ -285,7 +298,10 @@ export default class Quiz extends React.Component {
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 5,
-                        borderColor: this.state.p4borderColor,
+                        borderColor:
+                          this.state.btnID === quest.id
+                            ? this.state.p4borderColor
+                            : "#E5E5E5",
                         height: 45,
                       }}
                       onPress={() =>
@@ -295,6 +311,7 @@ export default class Quiz extends React.Component {
                           p3borderColor: "#E5E5E5",
                           p4borderColor: "#4A89F6",
                           selectID: "D",
+                          btnID: quest.id,
                         })
                       }
                     >

@@ -41,7 +41,11 @@ import {
   Radio,
 } from "native-base";
 import axios from "axios";
-import { GetSurveyPath, PostSurveyPath } from "./constantCaregiver";
+import {
+  GetSurveyPath,
+  PostSurveyPath,
+  CareUpdateProfilePath,
+} from "./constantCaregiver";
 import AsyncStorage from "@react-native-community/async-storage";
 
 YellowBox.ignoreWarnings(["Remote debugger"]);
@@ -68,6 +72,7 @@ export default class WeeklySurveryLoop extends React.Component {
     survey: this.props.navigation.state.params.survey,
     careID: this.props.navigation.state.params.careID,
     objPicker: this.props.navigation.state.params.objPicker,
+    data: this.props.navigation.state.params.data,
   };
 
   async componentDidMount() {
@@ -118,7 +123,7 @@ export default class WeeklySurveryLoop extends React.Component {
       .post(PostSurveyPath + qsID, formData)
       .then((res) => {
         console.log("Res Survey:", res.data);
-        Alert.alert("Server Response", res.data.success);
+        // Alert.alert("Server Response", res.data.success);
         objPicker2 = this.state.objPicker + 1;
         console.log("Picker ADD", objPicker2);
         this.setState({
@@ -130,22 +135,21 @@ export default class WeeklySurveryLoop extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-
-    if (this.state.survey.length > objPicker2) {
+    let ValidArray =
+      Array.isArray(this.state.survey) && this.state.survey.length;
+    console.log("Validator:", ValidArray, objPicker2 > ValidArray);
+    if (objPicker2 > ValidArray) {
       //   console.log("Lenght Survey:", this.state.survey.length);
       //   const objPicker2 = this.state.objPicker + 1;
       //   console.log("Lenght OBJ PICKER:", objPicker2);
       console.log(" IF" + this.state.survey.length + objPicker2);
-      this.props.navigation.navigate("WeeklySurveyLoop", {
+      this.props.navigation.replace("WeeklySurveyLoop", {
         survey: this.state.survey,
         objPicker: this.state.objPicker,
         careID: this.state.careID,
       });
-    } else if (
-      this.state.survey.length === objPicker2 ||
-      this.state.survey.length < objPicker2
-    ) {
-      alert("ELSE IF");
+    } else {
+      // alert("ELSE IF");
       this.props.navigation.navigate("Thankyou");
     }
   };
@@ -183,7 +187,7 @@ export default class WeeklySurveryLoop extends React.Component {
   };
 
   render() {
-    const { assetsLoaded } = this.state;
+    const { assetsLoaded, data } = this.state;
     const object = this.state.survey[this.state.objPicker];
     console.log("Object:", object);
     if (assetsLoaded) {
@@ -194,12 +198,17 @@ export default class WeeklySurveryLoop extends React.Component {
               style={{ marginTop: 0, height: 240, backgroundColor: "#FF4B7D" }}
             >
               <View style={{ flexDirection: "row" }}>
-                <IconAnt
-                  name="left"
-                  size={20}
-                  color="white"
-                  style={{ marginTop: 15, marginLeft: 21 }}
-                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <IconAnt
+                    name="left"
+                    size={20}
+                    color="#A4A4A4"
+                    style={{ marginTop: 15, marginLeft: 21 }}
+                  />
+                </TouchableOpacity>
+
                 <Text
                   style={{
                     fontSize: 18,
@@ -215,7 +224,15 @@ export default class WeeklySurveryLoop extends React.Component {
 
               <View style={{ flexDirection: "row" }}>
                 <Image
-                  source={require("../assets/img2.png")}
+                  source={
+                    data
+                      ? {
+                          uri:
+                            "https://aplushome.facebhoook.com/public/clients/" +
+                            data.image,
+                        }
+                      : require("../assets/img2.png")
+                  }
                   style={{
                     width: 79,
                     height: 79,
@@ -236,7 +253,7 @@ export default class WeeklySurveryLoop extends React.Component {
                       color: "#FFFFFF",
                     }}
                   >
-                    Diana Wagner
+                    {data.name || "Name"}
                   </Text>
                   <Text
                     style={{
@@ -247,7 +264,7 @@ export default class WeeklySurveryLoop extends React.Component {
                       color: "#FFFFFF",
                     }}
                   >
-                    Philadelphia
+                    {data.address || "Address"}
                   </Text>
                   <Button
                     style={{

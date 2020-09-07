@@ -132,7 +132,7 @@ export default class Myaccount2Care extends React.Component {
                 </Text>
 
                 <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate("ViewSchedule")}
+                // onPress={() => this.props.navigation.navigate("ViewSchedule")}
                 >
                   <Button
                     style={{
