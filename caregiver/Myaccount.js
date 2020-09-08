@@ -66,6 +66,10 @@ export default class MyaccountCare extends React.Component {
       file: null,
       dob: "",
       pick: false,
+      assetsLoaded: false,
+      task: "",
+      tasks: [],
+      taskToString: "",
     };
     YellowBox.ignoreWarnings([
       "Warning: isMounted(...) is deprecated",
@@ -77,9 +81,7 @@ export default class MyaccountCare extends React.Component {
     //To hide the NavigationBar from current Screen
     headerShown: false,
   };
-  state = {
-    assetsLoaded: false,
-  };
+
   onValueChange(value) {
     this.setState({
       selected: value,
@@ -92,6 +94,9 @@ export default class MyaccountCare extends React.Component {
     axios.get(GetCareProfilePath + this.state.token).then((res) => {
       const data = res.data["success"];
       console.log("Response", data);
+      let newArr = data.skills;
+      newArr = newArr.split(",");
+      console.log("newARRAY", newArr);
 
       this.setState({
         data: data,
@@ -100,6 +105,7 @@ export default class MyaccountCare extends React.Component {
         phone: data.phone,
         dob: data.dob,
         imagePickerPath: data.image,
+        tasks: newArr,
       });
     });
   };
@@ -123,9 +129,10 @@ export default class MyaccountCare extends React.Component {
 
   onClickListener = () => {
     // const Data = this.state.profileData;
+    console.log("Skills", this.state.taskToString);
     const Id = this.state.token;
     const Dob = this.state.dob;
-    // const name = this.state.name;
+    const Skills = this.state.taskToString;
     // const Password = this.state.password;
     const Phone = this.state.phone;
     const image = this.state.imagePickerPath;
@@ -133,6 +140,8 @@ export default class MyaccountCare extends React.Component {
     console.log("Image Info :", this.state.imageUri);
 
     const formData = new FormData();
+    formData.append("skills", Skills);
+
     formData.append("dob", Dob);
     formData.append("phone", Phone);
     this.state.pick
@@ -239,6 +248,36 @@ export default class MyaccountCare extends React.Component {
 
     this.setState({ assetsLoaded: true });
   }
+  addTasks = () => {
+    const newtask = this.state.task;
+    if (newtask) {
+      console.log("New Task", newtask);
+      const taskList = this.state.tasks;
+      taskList.push(newtask);
+      taskList.map((item) => {
+        console.log("item", item);
+      });
+      console.log("List", taskList);
+      let newString = taskList.toString();
+      console.log("StringTOARRAY:", newString);
+      this.setState({
+        tasks: taskList,
+        task: null,
+        taskToString: newString,
+      });
+    } else {
+      console.log("Task Field isn't Empty");
+    }
+  };
+  removeTask = (id) => {
+    console.log("task Id", id);
+    const list = this.state.tasks;
+    const newList = list.filter((item) => item !== id);
+    console.log("List", newList);
+    let newString = list.toString();
+    console.log("StringTOARRAY:", newString);
+    this.setState({ tasks: newList, taskToString: newString });
+  };
 
   render() {
     const { assetsLoaded } = this.state;
@@ -371,124 +410,107 @@ export default class MyaccountCare extends React.Component {
               Skills
             </Text>
 
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <Button
-                style={{
-                  marginTop: 15,
-                  width: 92,
-                  height: 35,
-                  marginLeft: 10,
-                  backgroundColor: "#FEF2F5",
-                  borderRadius: 4,
-                  borderWidth: 1,
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#FF4B7D",
-                  }}
-                >
-                  SKILL #01
-                </Text>
-              </Button>
-              <Button
-                style={{
-                  marginTop: 15,
-                  width: 92,
-                  height: 35,
-                  marginLeft: 10,
-                  backgroundColor: "#FEF2F5",
-                  borderRadius: 4,
-                  borderWidth: 1,
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#FF4B7D",
-                  }}
-                >
-                  SKILL #02
-                </Text>
-              </Button>
-              <Button
-                style={{
-                  marginTop: 15,
-                  width: 92,
-                  height: 35,
-                  marginLeft: 10,
-                  backgroundColor: "#FEF2F5",
-                  borderRadius: 4,
-                  borderWidth: 1,
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#FF4B7D",
-                  }}
-                >
-                  SKILL #03
-                </Text>
-              </Button>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                width: "95%",
+                flexWrap: "wrap",
+              }}
+            >
+              {this.state.tasks
+                ? this.state.tasks.map((item, _id) => {
+                    return (
+                      // <TouchableOpacity
+                      //   key={_id}
+                      //   style={{ margin: 3 }}
+                      //   onPress={() => this.removeTask(item)}
+                      // >
+                      //   <Text
+                      //     style={{
+                      //       height: 30,
+                      //       backgroundColor: "#fff",
+                      //       borderRadius: 25,
+                      //       borderWidth: 0.3,
+                      //       borderColor: "#a4a4a4",
+                      //       textAlign: "center",
+                      //       paddingTop: 5,
+                      //       color: "#a4a4a4",
+                      //       paddingHorizontal: 10,
+                      //     }}
+                      //   >
+                      //     {item}
+                      //   </Text>
+                      // </TouchableOpacity>
+                      <Button
+                        key={_id}
+                        onPress={() => this.removeTask(item)}
+                        style={{
+                          marginTop: 15,
+                          height: 35,
+                          marginLeft: 10,
+                          backgroundColor: "#FEF2F5",
+                          borderRadius: 4,
+                          borderWidth: 1,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            alignSelf: "center",
+                            fontWeight: "600",
+                            color: "#FF4B7D",
+                          }}
+                        >
+                          {item}
+                        </Text>
+                      </Button>
+                    );
+                  })
+                : null}
             </View>
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <Button
+
+            <View style={{ flexDirection: "row", height: 60, width: "100%" }}>
+              <View
                 style={{
-                  marginTop: 0,
-                  width: 92,
-                  height: 35,
-                  marginLeft: 10,
-                  backgroundColor: "#FEF2F5",
+                  marginLeft: 15,
+                  marginTop: 20,
+                  width: 250,
+                  height: 50,
+                  borderColor: "#E2E2E2",
                   borderRadius: 4,
                   borderWidth: 1,
-                  textAlign: "center",
+                  textAlign: "left",
                 }}
               >
+                <Input
+                  placeholder="Add New Skill"
+                  placeholderTextColor={"#A4A4A4"}
+                  onChangeText={(text) => {
+                    this.setState({
+                      task: text,
+                    });
+                  }}
+                />
+              </View>
+              <TouchableOpacity onPress={() => this.addTasks()}>
                 <Text
                   style={{
-                    fontSize: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#FF4B7D",
+                    fontSize: 16,
+                    marginTop: 20,
+                    fontWeight: "400",
+                    color: "#fff",
+                    backgroundColor: "#B20838",
+                    height: 50,
+                    width: 90,
+                    padding: 15,
+                    borderTopRightRadius: 10,
                   }}
                 >
-                  SKILL #04
+                  SAVE
                 </Text>
-              </Button>
-              <Button
-                style={{
-                  marginTop: 0,
-                  width: 92,
-                  height: 35,
-                  marginLeft: 10,
-                  backgroundColor: "#FEF2F5",
-                  borderRadius: 4,
-                  borderWidth: 1,
-                  textAlign: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 10,
-                    alignSelf: "center",
-                    fontWeight: "600",
-                    color: "#FF4B7D",
-                  }}
-                >
-                  SKILL #05
-                </Text>
-              </Button>
+              </TouchableOpacity>
             </View>
 
             <Form>

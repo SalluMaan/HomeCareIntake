@@ -55,3 +55,6 @@ export const GetCareProfilePath =
 // https://aplushome.facebhoook.com/api/survey/3
 
 // https://aplushome.facebhoook.com/api/addmedicalreport/1
+
+export const CaregiverCertificateFileView =
+  "https://aplushome.facebhoook.com/public/cargivercertificates";

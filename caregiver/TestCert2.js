@@ -16,6 +16,8 @@ import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import IconAnt1 from "react-native-vector-icons/AntDesign";
 import * as Font from "expo-font";
+import * as Linking from "expo-linking";
+
 import {
   Container,
   Header,
@@ -25,6 +27,7 @@ import {
   Form,
   DatePicker,
 } from "native-base";
+import { createOpenLink } from "react-native-open-maps";
 
 YellowBox.ignoreWarnings(["Remote debugger"]);
 import axios from "axios";
@@ -178,6 +181,12 @@ export default class TestCert2Care extends React.Component {
     });
   };
 
+  handleLinkCertificate = (link) => {
+    console.log("Certificate");
+    Linking.openURL(
+      "http://aplushome.facebhoook.com/public/caregivercertificate/1117485087.docx"
+    );
+  };
   render() {
     const { assetsLoaded } = this.state;
     if (assetsLoaded) {
@@ -476,9 +485,8 @@ export default class TestCert2Care extends React.Component {
                   {this.state.pick ? (
                     <TouchableOpacity
                       onPress={() =>
-                        Alert.alert(
-                          "Server Response",
-                          "File Name:" + this.state.fileObject.certificate
+                        this.handleLinkCertificate(
+                          this.state.fileObject.certificate
                         )
                       }
                     >

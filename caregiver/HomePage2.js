@@ -21,6 +21,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
 import Moment from "moment";
 import CustomHeader2 from "../MyHeader2";
+import openMap from "react-native-open-maps";
 
 import * as CareGiverServices from "../src/services/CareGiver";
 
@@ -76,6 +77,20 @@ export default class HomePage2 extends React.Component {
     }
   };
 
+  handleMap = (a, b) => {
+    console.log("LANGLAT:", a, b);
+    const lang = Number(a);
+    const lat = Number(b);
+
+    if (a !== null && a !== "" && b !== null && b !== "") {
+      openMap({ latitude: lang, longitude: lat });
+    } else {
+      alert(
+        "There was error with longitude latitude its containing null value "
+      );
+    }
+  };
+
   getSchedule = () => {
     // console.log("Token:", this.state.intakeId);
     // axios
@@ -116,9 +131,7 @@ export default class HomePage2 extends React.Component {
             image={this.state.image}
           />
           <ScrollView>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Stack4")}
-            >
+            <TouchableOpacity>
               <Text
                 style={{
                   fontSize: 18,
@@ -136,12 +149,12 @@ export default class HomePage2 extends React.Component {
             {this.state.totalSch ? (
               this.state.totalSch.map((sch, id) => {
                 return (
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     key={id}
                     onPress={() => {
-                      this.props.navigation.navigate('ScheduleDet', {
-                        schedule: sch
-                      })
+                      this.props.navigation.navigate("ScheduleDet", {
+                        schedule: sch,
+                      });
                     }}
                   >
                     <View
@@ -265,6 +278,11 @@ export default class HomePage2 extends React.Component {
                         </Text>
                       </View>
                       <Button
+                        onPress={() =>
+                          this.handleMap(sch.longitude, sch.latitude)
+                        }
+                        // 31.483832, 74.319117
+
                         style={{
                           marginTop: 23,
                           width: 138,
@@ -276,14 +294,13 @@ export default class HomePage2 extends React.Component {
                           textAlign: "center",
                         }}
                       >
-                        {" "}
                         <IconAnt3
                           name="map-pin"
                           size={15}
                           color="white"
                           style={{ marginLeft: 5 }}
                         />
-                        <Text> </Text>
+
                         <Text
                           style={{
                             fontSize: 16,

@@ -122,10 +122,7 @@ export default class ChatCare extends Component {
             />
           </View>
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("EditProfile")}
-            style={styles.btnSend}
-          >
+          <TouchableOpacity style={styles.btnSend}>
             <IconAnt3
               name="send-circle"
               size={40}

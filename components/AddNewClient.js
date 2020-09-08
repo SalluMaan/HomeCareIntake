@@ -21,6 +21,9 @@ import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import PlacesInput from "react-native-places-input";
+
 import * as ImagePicker from "expo-image-picker";
 
 import {
@@ -324,6 +327,47 @@ export default class AddNewClient extends React.Component {
     if (assetsLoaded) {
       return (
         <View style={styles.container}>
+          {/* <GooglePlacesAutocomplete
+            placeholder="Search"
+            // minLength={2} // minimum length of text to search
+            // autoFocus={false}
+            // returnKeyType={"search"} // Can be left out for default return key
+            // listViewDisplayed={true} // true/false/undefined
+            // fetchDetails={true}
+            onPress={(data, details = null) => {
+              console.log(data, details);
+            }}
+            GooglePlacesSearchQuery={{
+              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+              rankby: "distance",
+              types: "bank",
+            }}
+            currentLocation={true}
+            currentLocationLabel="My Location"
+            // AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA
+            query={{
+              key: "AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA",
+              language: "en",
+              types: "(cities)", // default: 'geocode'
+            }}
+            nearbyPlacesAPI="GooglePlacesSearch"
+            debounce={300}
+          /> */}
+          {/* <ScrollView style={{ flex: 1 }}>
+            <View style={{ height: 500, width: "100%" }}> */}
+          {/* <PlacesInput
+            googleApiKey={"AIzaSyCUyJDU78nmoiOtFlVJhGVL5W7avIDaKYU"}
+            placeHolder={"Some Place holder"}
+            language={"en"}
+            onSelect={(place) => console.log("Places", place)}
+            keyboardShouldPersistTaps="always"
+
+            // iconResult={
+            //   <IconAnt name="md-pin" size={25} style={styles.placeIcon} />
+            // }
+          /> */}
+          {/* </View>
+          </ScrollView> */}
           <ScrollView>
             <View
               style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}
@@ -719,23 +763,6 @@ export default class AddNewClient extends React.Component {
                 onChangeText={(address) => this.setState({ address })}
               />
             </Item>
-            {/* <Item
-              style={{
-                backgroundColor: "white",
-                marginLeft: 15,
-                marginRight: 15,
-                marginTop: 0,
-                height: 500,
-                alignSelf: "center",
-                borderColor: "#E2E2E2",
-                borderRadius: 4,
-                borderWidth: 1,
-                textAlign: "left",
-              }}
-              regular
-            >
-              {this.GooglePlacesInput()}
-            </Item> */}
 
             <Button
               style={{
@@ -762,7 +789,6 @@ export default class AddNewClient extends React.Component {
                 Next
               </Text>
             </Button>
-            {/* <Text>{this.state.response}</Text> */}
           </ScrollView>
         </View>
       );
