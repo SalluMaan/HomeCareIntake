@@ -422,12 +422,15 @@ export default class AddNewClient extends React.Component {
               style={{ padding: 4 }}
             />
           </TouchableOpacity>
+          <Text style={{ color: "#7D7D7D", marginLeft: 20, marginTop: 30 }}>
+            Add Your City
+          </Text>
           <Item
             style={{
               backgroundColor: "white",
               marginLeft: 15,
               marginRight: 15,
-              marginTop: 10,
+              marginTop: 3,
               width: 328,
               alignSelf: "center",
               borderColor: "#E2E2E2",
@@ -438,7 +441,7 @@ export default class AddNewClient extends React.Component {
             regular
           >
             <GooglePlacesAutocomplete
-              placeholder="Search"
+              placeholder="Search Your City"
               // minLength={2} // minimum length of text to search
               // autoFocus={false}
               // returnKeyType={"search"} // Can be left out for default return key
@@ -462,13 +465,27 @@ export default class AddNewClient extends React.Component {
                   address: add,
                 });
               }}
+              styles={{
+                textInputContainer: {
+                  width: "100%",
+                  backgroundColor: "#fff",
+                  borderTopWidth: 0,
+                  height: 50,
+                },
+                description: {
+                  fontWeight: "bold",
+                },
+                predefinedPlacesDescription: {
+                  color: "#1faadb",
+                },
+              }}
               GooglePlacesSearchQuery={{
                 // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
                 rankby: "distance",
                 types: "bank",
               }}
-              currentLocation={true}
-              currentLocationLabel="My Location"
+              // currentLocation={true}
+              // currentLocationLabel="My Location"
               // AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA
 
               query={{

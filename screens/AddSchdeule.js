@@ -245,6 +245,9 @@ export default class AddSchdeule extends React.Component {
     return true;
   }
   onClickListener = () => {
+    // const intakeCo_ = this.state.intakeId;
+    // console.log("ID:", intakeCo_);
+
     if (this.checkEmptyInput() && this.validateDate()) {
       // if (this.validateDate()) {
       //   if (this.validateTime()) {

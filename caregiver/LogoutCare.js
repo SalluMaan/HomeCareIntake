@@ -50,7 +50,7 @@ export default class LogoutCare extends React.Component {
       <View style={styles.container}>
         <ScrollView>
           <TouchableOpacity
-            onPress={this.props.navigation.navigate("LoginCare")}
+            onPress={this.props.navigation.navigate("AskLogin")}
           ></TouchableOpacity>
         </ScrollView>
       </View>

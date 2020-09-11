@@ -406,10 +406,13 @@ export default class LeadStatus extends React.Component {
                       marginLeft: 21,
                       marginTop: 8,
                       fontWeight: "400",
-                      color: "#A4A4A4",
+                      color: "#FF4B7D",
+                      textDecorationLine: "underline",
                     }}
                   >
-                    {this.state.time ? this.state.time : "2020-09-11"}
+                    {this.state.time
+                      ? this.state.time
+                      : "Click Here to Pick the Date"}
                   </Text>
                 </View>
                 <DateTimePicker
