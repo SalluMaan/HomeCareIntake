@@ -41,7 +41,10 @@ export const AddCertificatePath =
 export const GetCertificatePath =
   "https://aplushome.facebhoook.com/api/getcertificate/";
 export const GetFAQsPath = "https://aplushome.facebhoook.com/api/getfaq";
-export const GetQuizPath = "https://aplushome.facebhoook.com/api/getquiz";
+export const GetAllQuizPath =
+  "https://aplushome.facebhoook.com/api/getquizname/";
+export const GetQuizPath = "https://aplushome.facebhoook.com/api/getquiz/";
+
 export const QuizSubmitPath = "https://aplushome.facebhoook.com/api/quiz/";
 // export const QuizSubmitPath = "https://aplushome.facebhoook.com/api/quiz/";
 export const AddMedicalReportPath =

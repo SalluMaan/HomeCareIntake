@@ -63,6 +63,23 @@ export default class Meetings2 extends React.Component {
     ]);
   }
 
+  handleMap = (a, b) => {
+    console.log("LANGLAT:", a, b);
+    const lang = Number(a);
+    const lat = Number(b);
+
+    if (a !== null && a !== "" && b !== null && b !== "") {
+      this.props.navigation.navigate("Maps", {
+        lang: parseFloat(a),
+        lat: parseFloat(b),
+      });
+    } else {
+      alert(
+        "There was error with longitude latitude its containing null value "
+      );
+    }
+  };
+
   static navigationOptions = {
     //To hide the NavigationBar from current Screen
     headerShown: false,
@@ -240,6 +257,8 @@ export default class Meetings2 extends React.Component {
             </View>
 
             {this.state.clicked ? (
+              Array.isArray(this.state.totalSch) &&
+              this.state.totalSch.length > 0 &&
               this.state.totalSch ? (
                 this.state.totalSch.map((sch, id) => {
                   return (
@@ -351,8 +370,8 @@ export default class Meetings2 extends React.Component {
                                 color: "#7D7D7D",
                               }}
                             >
-                              {sch.address_line2
-                                ? sch.address_line2 + sch.location
+                              {sch.address
+                                ? sch.address + sch.location
                                 : "Address Not Found"}
                             </Text>
                           </View>
@@ -378,6 +397,9 @@ export default class Meetings2 extends React.Component {
                             </Text>
                           </View>
                           <Button
+                            onPress={() =>
+                              this.handleMap(sch.longitude, sch.latitude)
+                            }
                             style={{
                               marginTop: 23,
                               width: 138,
@@ -414,30 +436,30 @@ export default class Meetings2 extends React.Component {
                   );
                 })
               ) : (
-                <Text style={{ marginHorizontal: "8%" }}>
+                <Text style={{ margin: "10%", color: "#a4a4a4" }}>
                   No Schedule Found ......
                 </Text>
               )
             ) : this.state.total ? (
               this.state.total.map((meet, id) => {
                 return (
-                  <TouchableOpacity
+                  <View
                     key={id}
-                    onPress={() =>
-                      this.props.navigation.navigate("LeadStatus", {
-                        meeting: meet,
-                      })
-                    }
+                    style={{
+                      width: 334,
+                      height: 293,
+                      backgroundColor: "white",
+                      borderRadius: 10,
+                      alignSelf: "center",
+                      marginTop: 30,
+                    }}
                   >
-                    <View
-                      style={{
-                        width: 334,
-                        height: 293,
-                        backgroundColor: "white",
-                        borderRadius: 10,
-                        alignSelf: "center",
-                        marginTop: 30,
-                      }}
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate("LeadStatus", {
+                          meeting: meet,
+                        })
+                      }
                     >
                       <Text
                         style={{
@@ -515,38 +537,42 @@ export default class Meetings2 extends React.Component {
                         {meet.time.substring(0, 5)}
                         {meet.time.substring(0, 2) >= 12 ? " PM" : " AM"}
                       </Text>
-                      <Button
+                    </TouchableOpacity>
+
+                    <Button
+                      onPress={() =>
+                        this.handleMap(meet.longitude, meet.latitude)
+                      }
+                      style={{
+                        marginTop: 23,
+                        width: 138,
+                        height: 40,
+                        marginLeft: 20,
+                        backgroundColor: "#B20838",
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        textAlign: "center",
+                      }}
+                    >
+                      <IconAnt4
+                        name="map-pin"
+                        size={15}
+                        color="white"
+                        style={{ marginLeft: 5 }}
+                      />
+                      <Text> </Text>
+                      <Text
                         style={{
-                          marginTop: 23,
-                          width: 138,
-                          height: 40,
-                          marginLeft: 20,
-                          backgroundColor: "#B20838",
-                          borderRadius: 4,
-                          borderWidth: 1,
-                          textAlign: "center",
+                          fontSize: 16,
+                          marginLeft: 5,
+                          fontWeight: "600",
+                          color: "white",
                         }}
                       >
-                        <IconAnt4
-                          name="map-pin"
-                          size={15}
-                          color="white"
-                          style={{ marginLeft: 5 }}
-                        />
-                        <Text> </Text>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            marginLeft: 5,
-                            fontWeight: "600",
-                            color: "white",
-                          }}
-                        >
-                          MAP
-                        </Text>
-                      </Button>
-                    </View>
-                  </TouchableOpacity>
+                        MAP
+                      </Text>
+                    </Button>
+                  </View>
                 );
               })
             ) : (

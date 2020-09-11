@@ -14,7 +14,7 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { Assets } from "react-navigation-stack";
 import { ScrollView } from "react-native-gesture-handler";
-import { QuizSubmitPath } from "./constantCaregiver";
+import { GetQuizPath, QuizSubmitPath } from "./constantCaregiver";
 import axios from "axios";
 // const { StatusBarManager } = NativeModules;
 // var windowWidth = Dimensions.get("window").width;
@@ -35,25 +35,97 @@ export default class Quiz extends React.Component {
       selectID: null,
       answer: [],
       btnID: "",
+      Quiz: "",
     };
   }
 
-  postQuiz = (careID, answer, qsID) => {
+  selected = (qsID, id, answer) => {
+    console.log("DTAT:", qsID, id, answer);
+    const data = {
+      id,
+      answer,
+    };
+    const arData = this.state.answer;
+    arData.push(data);
+    if (answer === "A") {
+      this.setState({
+        p1borderColor: "#4A89F6",
+        p2borderColor: "#E5E5E5",
+        p3borderColor: "#E5E5E5",
+        p4borderColor: "#E5E5E5",
+        selectID: answer,
+        btnID: qsID,
+        answer: arData,
+      });
+    } else if (answer === "B") {
+      this.setState({
+        p1borderColor: "#E5E5E5",
+        p2borderColor: "#4A89F6",
+        p3borderColor: "#E5E5E5",
+        p4borderColor: "#E5E5E5",
+        selectID: answer,
+        btnID: qsID,
+        answer: arData,
+      });
+    } else if (answer === "C") {
+      this.setState({
+        p1borderColor: "#E5E5E5",
+        p2borderColor: "#E5E5E5",
+        p3borderColor: "#4A89F6",
+        p4borderColor: "#E5E5E5",
+        selectID: answer,
+        btnID: qsID,
+        answer: arData,
+      });
+    } else if (answer === "D") {
+      this.setState({
+        p1borderColor: "#E5E5E5",
+        p2borderColor: "#E5E5E5",
+        p3borderColor: "#E5E5E5",
+        p4borderColor: "#4A89F6",
+        selectID: answer,
+        btnID: qsID,
+        answer: arData,
+      });
+    }
+  };
+
+  getQuiz = () => {
+    const { quiz, careID } = this.props.navigation.state.params;
+
+    console.log("QUIZ ID FROM :", quiz.quiz_id);
+    axios
+      .get(GetQuizPath + quiz.quiz_id)
+      .then((res) => {
+        console.log("QUIZ GET For Specific ID:", res.data);
+        const data = res.data.Quiz;
+        this.setState({
+          Quiz: data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  postQuiz = (careID, answer) => {
+    const { quiz } = this.props.navigation.state.params;
+
     const formData = new FormData();
     formData.append("caregiver_id", careID);
-    formData.append("answer", answer);
+    formData.append("answer", JSON.stringify(answer));
 
     axios
-      .post(QuizSubmitPath + qsID, formData)
+      .post(QuizSubmitPath + quiz.quiz_id, formData)
       .then((res) => {
-        Alert.alert(
-          "Server Response",
-          "Answer :" + answer + " is submitted for this Question ID:" + qsID
-        );
+        console.log("POST QUIZ RESPONSE:", res.data);
+        Alert.alert("Server Response", "Thank You for Submitting Quiz!");
+
         this.setState({
           answer: null,
           selectID: null,
         });
+        this.props.navigation.replace("QuizStart");
       })
       .catch((err) => {
         console.log(err);
@@ -78,12 +150,17 @@ export default class Quiz extends React.Component {
   submitQuiz = () => {
     const { quiz, careID } = this.props.navigation.state.params;
 
-    if (quiz.length === this.state.answer.length) {
+    if (this.state.Quiz.length === this.state.answer.length) {
       const newArr = this.state.answer;
       newArr.sort((a, b) => a.qsID < b.qsID).reverse();
-      console.log("Array Sort", newArr);
+      let AnswerArray = [];
+      newArr.map((arr, id) => {
+        AnswerArray.push(arr.answer);
+      });
+
+      console.log("Array Sort", newArr, AnswerArray);
       // const newAnswerArray=newArr.
-      this.setState({});
+      this.postQuiz(careID, AnswerArray);
     } else {
       Alert.alert(
         "Server Response",
@@ -91,8 +168,12 @@ export default class Quiz extends React.Component {
       );
     }
   };
+
+  componentDidMount() {
+    this.getQuiz();
+  }
   render() {
-    const { quiz, careID } = this.props.navigation.state.params;
+    // const { quiz, careID } = this.props.navigation.state.params;
     // console.log("Params:", quiz, careID, quiz.length);
     return (
       <View style={styles.container}>
@@ -117,8 +198,10 @@ export default class Quiz extends React.Component {
 
           {/* ------------------------------START QUESTIONS------------------------------ */}
 
-          {quiz ? (
-            quiz.map((quest, id) => {
+          {Array.isArray(this.state.Quiz) &&
+          this.state.Quiz.length > 0 &&
+          this.state.Quiz ? (
+            this.state.Quiz.map((quest, id) => {
               return (
                 <View key={id} style={{ flex: 4, marginTop: 25 }}>
                   <Text
@@ -175,16 +258,7 @@ export default class Quiz extends React.Component {
                             : "#E5E5E5",
                         height: 45,
                       }}
-                      onPress={() =>
-                        this.setState({
-                          p1borderColor: "#4A89F6",
-                          p2borderColor: "#E5E5E5",
-                          p3borderColor: "#E5E5E5",
-                          p4borderColor: "#E5E5E5",
-                          selectID: "A",
-                          btnID: quest.id,
-                        })
-                      }
+                      onPress={() => this.selected(quest.id, id + 1, "A")}
                     >
                       <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
                         {quest.answer_a || "Options"}
@@ -218,16 +292,7 @@ export default class Quiz extends React.Component {
                             : "#E5E5E5",
                         height: 45,
                       }}
-                      onPress={() =>
-                        this.setState({
-                          p1borderColor: "#E5E5E5",
-                          p2borderColor: "#4A89F6",
-                          p3borderColor: "#E5E5E5",
-                          p4borderColor: "#E5E5E5",
-                          selectID: "B",
-                          btnID: quest.id,
-                        })
-                      }
+                      onPress={() => this.selected(quest.id, id + 1, "B")}
                     >
                       <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
                         {quest.answer_b || "Options"}
@@ -261,16 +326,7 @@ export default class Quiz extends React.Component {
                             : "#E5E5E5",
                         height: 45,
                       }}
-                      onPress={() =>
-                        this.setState({
-                          p1borderColor: "#E5E5E5",
-                          p2borderColor: "#E5E5E5",
-                          p3borderColor: "#4A89F6",
-                          p4borderColor: "#E5E5E5",
-                          selectID: "C",
-                          btnID: quest.id,
-                        })
-                      }
+                      onPress={() => this.selected(quest.id, id + 1, "C")}
                     >
                       <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
                         {quest.answer_c || "Options"}
@@ -304,16 +360,7 @@ export default class Quiz extends React.Component {
                             : "#E5E5E5",
                         height: 45,
                       }}
-                      onPress={() =>
-                        this.setState({
-                          p1borderColor: "#E5E5E5",
-                          p2borderColor: "#E5E5E5",
-                          p3borderColor: "#E5E5E5",
-                          p4borderColor: "#4A89F6",
-                          selectID: "D",
-                          btnID: quest.id,
-                        })
-                      }
+                      onPress={() => this.selected(quest.id, id + 1, "D")}
                     >
                       <Text style={{ fontSize: 15, color: "#A4A4A4" }}>
                         {quest.answer_d || "Options"}
@@ -323,28 +370,6 @@ export default class Quiz extends React.Component {
                   </View>
 
                   {/* ------------------------------------------------- */}
-
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.submitSingleAnswer(quest.id, this.state.selectID)
-                    }
-                    style={{ marginTop: 30, alignSelf: "center" }}
-                  >
-                    <Text
-                      style={{
-                        height: 30,
-                        width: 100,
-                        backgroundColor: "#B20838",
-                        color: "#fff",
-                        borderRadius: 15,
-                        textAlign: "center",
-                        paddingTop: 7,
-                        fontSize: 10,
-                      }}
-                    >
-                      Submit Answer {id + 1}
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               );
             })
@@ -353,6 +378,26 @@ export default class Quiz extends React.Component {
               There is no Question......
             </Text>
           )}
+
+          <TouchableOpacity
+            onPress={() => this.submitQuiz()}
+            style={{ marginVertical: 30, alignSelf: "center" }}
+          >
+            <Text
+              style={{
+                height: 40,
+                width: 130,
+                backgroundColor: "#B20838",
+                color: "#fff",
+                borderRadius: 15,
+                textAlign: "center",
+                paddingTop: 9,
+                fontSize: 14,
+              }}
+            >
+              Submit Quiz
+            </Text>
+          </TouchableOpacity>
 
           {/* <TouchableOpacity
             onPress={() => this.submitQuiz()}

@@ -15,6 +15,8 @@ import { Input, Item, Card } from "native-base";
 import { Button } from "react-native-paper";
 import * as Font from "expo-font";
 YellowBox.ignoreWarnings(["Remote debugger"]);
+// import { NavigationActions, StackActions } from "react-navigation";
+// import { StackActions } from "@react-navigation/native";
 
 export default class Thankyou extends React.Component {
   static navigationOptions = {
@@ -35,6 +37,10 @@ export default class Thankyou extends React.Component {
 
   render() {
     const { assetsLoaded } = this.state;
+    // const resetAction = StackActions.reset({
+    //   index: 0,
+    //   actions: [NavigationActions.navigate({ routeName: "First2" })],
+    // });
     if (assetsLoaded) {
       return (
         <View style={styles.container}>
@@ -75,7 +81,9 @@ export default class Thankyou extends React.Component {
               Congratulations! Your survey will improve our product.
             </Text>
 
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Home2")}
+            >
               <Button
                 // onPress={() => this.props.navigation.navigate("First2")}
                 style={{

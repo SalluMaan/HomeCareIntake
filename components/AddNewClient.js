@@ -46,6 +46,8 @@ import axios from "axios";
 YellowBox.ignoreWarnings(["Remote debugger"]);
 // https://aplushome.facebhoook.com/api/addclient
 import AsyncStorage from "@react-native-community/async-storage";
+import { color } from "react-native-reanimated";
+import { FlatList } from "react-native-gesture-handler";
 
 export default class AddNewClient extends React.Component {
   static navigationOptions = {
@@ -70,6 +72,8 @@ export default class AddNewClient extends React.Component {
       response: "",
       imagePickerPath: "",
       imageUri: "",
+      long: "",
+      lat: "",
     };
   }
   getData = async () => {
@@ -153,6 +157,8 @@ export default class AddNewClient extends React.Component {
     const Classification = this.state.classification;
     const IntakeCordID = this.state.intakeId;
     const image = this.state.imagePickerPath;
+    const Long = this.state.long;
+    const Lat = this.state.lat;
 
     console.log(
       "AddClient:",
@@ -164,7 +170,9 @@ export default class AddNewClient extends React.Component {
       Rate,
       Tasks,
       Classification,
-      IntakeCordID
+      IntakeCordID,
+      Long,
+      Lat
     );
 
     if (
@@ -195,6 +203,9 @@ export default class AddNewClient extends React.Component {
       formData.append("classification", Classification);
       formData.append("intake_Co", IntakeCordID);
       formData.append("address", Address);
+      formData.append("longitude", Long);
+      formData.append("latitude", Lat);
+
       formData.append("image", {
         uri: image,
         name: "userProfile.jpg",
@@ -218,6 +229,8 @@ export default class AddNewClient extends React.Component {
             address: "",
             intakeId: 1,
             imagePickerPath: null,
+            long: "",
+            lat: "",
           });
           alert("Client Successfully Added!");
 
@@ -327,131 +340,146 @@ export default class AddNewClient extends React.Component {
     if (assetsLoaded) {
       return (
         <View style={styles.container}>
-          {/* <GooglePlacesAutocomplete
-            placeholder="Search"
-            // minLength={2} // minimum length of text to search
-            // autoFocus={false}
-            // returnKeyType={"search"} // Can be left out for default return key
-            // listViewDisplayed={true} // true/false/undefined
-            // fetchDetails={true}
-            onPress={(data, details = null) => {
-              console.log(data, details);
-            }}
-            GooglePlacesSearchQuery={{
-              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-              rankby: "distance",
-              types: "bank",
-            }}
-            currentLocation={true}
-            currentLocationLabel="My Location"
-            // AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA
-            query={{
-              key: "AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA",
-              language: "en",
-              types: "(cities)", // default: 'geocode'
-            }}
-            nearbyPlacesAPI="GooglePlacesSearch"
-            debounce={300}
-          /> */}
-          {/* <ScrollView style={{ flex: 1 }}>
-            <View style={{ height: 500, width: "100%" }}> */}
-          {/* <PlacesInput
-            googleApiKey={"AIzaSyCUyJDU78nmoiOtFlVJhGVL5W7avIDaKYU"}
-            placeHolder={"Some Place holder"}
-            language={"en"}
-            onSelect={(place) => console.log("Places", place)}
-            keyboardShouldPersistTaps="always"
-
-            // iconResult={
-            //   <IconAnt name="md-pin" size={25} style={styles.placeIcon} />
-            // }
-          /> */}
-          {/* </View>
-          </ScrollView> */}
-          <ScrollView>
-            <View
-              style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}
-            >
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <IconAnt2
-                  name="left"
-                  size={20}
-                  color="#A4A4A4"
-                  style={{ marginRight: 5 }}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-              // onPress={() => this.props.navigation.navigate("AddNewCareg")}
-              >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    marginLeft: 95,
-                    marginTop: 0,
-                    fontWeight: "600",
-                    color: "#141414",
-                  }}
-                >
-                  Add New Client
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  width: "50%",
-                  height: 7,
-                  marginTop: 50,
-                  backgroundColor: "#FF4B7D",
-                }}
-              ></View>
-              <View
-                style={{
-                  width: "50%",
-                  height: 7,
-                  marginTop: 50,
-                  backgroundColor: "#FCC9D7",
-                }}
-              ></View>
-            </View>
-
-            <Image
-              source={
-                this.state.imagePickerPath
-                  ? { uri: this.state.imagePickerPath }
-                  : require("../assets/img2.png")
-              }
-              style={{
-                width: 120,
-                height: 120,
-                marginTop: 10,
-                alignSelf: "center",
-                borderRadius: 150 / 2,
-                overflow: "hidden",
-              }}
-            ></Image>
-            <TouchableOpacity
-              style={{
-                fontSize: 10,
-                alignSelf: "center",
-                marginLeft: "25%",
-                height: 25,
-                width: 25,
-                borderRadius: 100,
-                backgroundColor: "#fff",
-                marginTop: "-11%",
-              }}
-              onPress={() => this.ImagePick()}
-            >
-              <IconAnt
-                name="camera"
-                size={15}
-                color="#FF4B7D"
-                style={{ padding: 4 }}
+          <View style={{ marginTop: 13, marginLeft: 20, flexDirection: "row" }}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <IconAnt2
+                name="left"
+                size={20}
+                color="#A4A4A4"
+                style={{ marginRight: 5 }}
               />
             </TouchableOpacity>
+
+            <TouchableOpacity
+            // onPress={() => this.props.navigation.navigate("AddNewCareg")}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginLeft: 95,
+                  marginTop: 0,
+                  fontWeight: "600",
+                  color: "#141414",
+                }}
+              >
+                Add New Client
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                width: "50%",
+                height: 7,
+                marginTop: 50,
+                backgroundColor: "#FF4B7D",
+              }}
+            ></View>
+            <View
+              style={{
+                width: "50%",
+                height: 7,
+                marginTop: 50,
+                backgroundColor: "#FCC9D7",
+              }}
+            ></View>
+          </View>
+
+          <Image
+            source={
+              this.state.imagePickerPath
+                ? { uri: this.state.imagePickerPath }
+                : require("../assets/img2.png")
+            }
+            style={{
+              width: 120,
+              height: 120,
+              marginTop: 10,
+              alignSelf: "center",
+              borderRadius: 150 / 2,
+              overflow: "hidden",
+              marginBottom: 20,
+            }}
+          ></Image>
+          <TouchableOpacity
+            style={{
+              fontSize: 10,
+              alignSelf: "center",
+              marginLeft: "25%",
+              height: 25,
+              width: 25,
+              borderRadius: 100,
+              backgroundColor: "#fff",
+              marginTop: "-11%",
+            }}
+            onPress={() => this.ImagePick()}
+          >
+            <IconAnt
+              name="camera"
+              size={15}
+              color="#FF4B7D"
+              style={{ padding: 4 }}
+            />
+          </TouchableOpacity>
+          <Item
+            style={{
+              backgroundColor: "white",
+              marginLeft: 15,
+              marginRight: 15,
+              marginTop: 10,
+              width: 328,
+              alignSelf: "center",
+              borderColor: "#E2E2E2",
+              borderRadius: 4,
+              borderWidth: 1,
+              textAlign: "left",
+            }}
+            regular
+          >
+            <GooglePlacesAutocomplete
+              placeholder="Search"
+              // minLength={2} // minimum length of text to search
+              // autoFocus={false}
+              // returnKeyType={"search"} // Can be left out for default return key
+              // keyboardShouldPersistTaps="always"
+              // listViewDisplayed={false} // true/false/undefined
+              fetchDetails={true}
+              onPress={(data, details = null) => {
+                console.log("ONPRESS");
+                const Long = details.geometry.location.lng;
+                const Lat = details.geometry.location.lat;
+                const add = data.structured_formatting.main_text;
+                console.log(
+                  Long,
+                  Lat,
+                  data,
+                  data.structured_formatting.main_text
+                );
+                this.setState({
+                  long: Long,
+                  lat: Lat,
+                  address: add,
+                });
+              }}
+              GooglePlacesSearchQuery={{
+                // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+                rankby: "distance",
+                types: "bank",
+              }}
+              currentLocation={true}
+              currentLocationLabel="My Location"
+              // AIzaSyBxWvVr7wfqPzV6a7SRivdGqoVsFxXz8rA
+
+              query={{
+                key: "AIzaSyDSwPUB8IuctM5jmr4vx24HG0SjCCCbc1s",
+                language: "en",
+              }}
+              nearbyPlacesAPI="GooglePlacesSearch"
+              debounce={300}
+            />
+          </Item>
+          <ScrollView>
             <Text style={{ color: "#7D7D7D", marginLeft: 20, marginTop: 30 }}>
               Name
             </Text>
@@ -761,8 +789,10 @@ export default class AddNewClient extends React.Component {
               <Input
                 value={this.state.address}
                 onChangeText={(address) => this.setState({ address })}
+                disabled={true}
               />
             </Item>
+            {/* </ScrollView> */}
 
             <Button
               style={{

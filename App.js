@@ -123,6 +123,10 @@ import Quiz from "./caregiver/quiz";
 import WeeklySurveryLoop from "./caregiver/WeeklySurveyLoop";
 import LogoutCare from "./caregiver/LogoutCare";
 import ChatCare from "./caregiver/Chat2";
+import MapView from "react-native-maps";
+import MapViewCare from "./Map/MapViewCare";
+import MapViewIntake from "./Map/MapView";
+import MoveScreen from "./caregiver/moveScreen";
 
 console.disableYellowBox = true;
 
@@ -252,12 +256,15 @@ const FeedStack = createStackNavigator({
   AddSchdeule: { screen: AddSchdeule },
   Chat2: { screen: Chat2 },
 
-  Maps: {
-    screen: Maps,
+  Map: {
+    screen: MapViewIntake,
     navigationOptions: ({ navigation }) => ({
       headerShown: false,
     }),
   },
+  // MapIntake: {
+  //   screen: MapView,
+  // },
 
   EditProfile: { screen: EditProfile },
   Assessment: { screen: Assessment },
@@ -310,8 +317,8 @@ const FeedStack2 = createStackNavigator({
   Quiz: { screen: Quiz },
   // Chat: { screen: ChatCare },
   NotificationCare: { screen: NotificationCare },
-  Maps: {
-    screen: Maps,
+  MapCare: {
+    screen: MapViewCare,
     navigationOptions: ({ navigation }) => ({
       headerShown: false,
     }),
@@ -333,6 +340,7 @@ const FeedStack2 = createStackNavigator({
   WeeklySurvery4: { screen: WeeklySurvery4 },
   WeeklySurveyLoop: { screen: WeeklySurveryLoop },
   Thankyou: { screen: Thankyou },
+  Move: { screen: MoveScreen },
 });
 
 const drawNav = createDrawerNavigator({

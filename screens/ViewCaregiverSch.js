@@ -112,6 +112,23 @@ export default class ViewCaregiverSch extends React.Component {
     this.setState({ assetsLoaded: true });
   }
 
+  handleMap = (a, b) => {
+    console.log("LANGLAT:", a, b);
+    const lang = Number(a);
+    const lat = Number(b);
+
+    if (a !== null && a !== "" && b !== null && b !== "") {
+      this.props.navigation.navigate("Maps", {
+        lang: parseFloat(a),
+        lat: parseFloat(b),
+      });
+    } else {
+      alert(
+        "There was error with longitude latitude its containing null value "
+      );
+    }
+  };
+
   render() {
     const { selectedStartDate } = this.state;
     const startDate = selectedStartDate ? selectedStartDate.toString() : "";
@@ -340,6 +357,12 @@ export default class ViewCaregiverSch extends React.Component {
                           </Text>
                         </View>
                         <Button
+                          onPress={() =>
+                            this.handleMap(
+                              schedule.longitude,
+                              schedule.latitude
+                            )
+                          }
                           style={{
                             marginTop: 23,
                             width: 138,

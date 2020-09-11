@@ -95,6 +95,22 @@ export default class ViewClientSch extends React.Component {
         console.log(err.data);
       });
   };
+  handleMap = (a, b) => {
+    console.log("LANGLAT:", a, b);
+    const lang = Number(a);
+    const lat = Number(b);
+
+    if (a !== null && a !== "" && b !== null && b !== "") {
+      this.props.navigation.navigate("Maps", {
+        lang: parseFloat(a),
+        lat: parseFloat(b),
+      });
+    } else {
+      alert(
+        "There was error with longitude latitude its containing null value "
+      );
+    }
+  };
   setDate(newDate) {
     (this.chosenDate = new Date()), this.setState({ chosenDate: newDate });
   }
@@ -332,6 +348,9 @@ export default class ViewClientSch extends React.Component {
                         </Text>
                       </View>
                       <Button
+                        onPress={() =>
+                          this.handleMap(schedule.longitude, schedule.latitude)
+                        }
                         style={{
                           marginTop: 23,
                           width: 138,
@@ -343,7 +362,6 @@ export default class ViewClientSch extends React.Component {
                           textAlign: "center",
                         }}
                       >
-                        {" "}
                         <IconAnt3
                           name="map-pin"
                           size={15}

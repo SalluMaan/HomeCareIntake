@@ -146,7 +146,7 @@ export default class WeeklySurvery3 extends React.Component {
     let ValidArray =
       Array.isArray(this.state.survey) && this.state.survey.length;
     if (ValidArray > 0) {
-      this.props.navigation.replace("WeeklySurveyLoop", {
+      this.props.navigation.navigate("WeeklySurveyLoop", {
         survey: this.state.survey,
         objPicker: 1,
         careID: this.state.careID,

@@ -133,6 +133,23 @@ export default class ViewSchedule extends React.Component {
       });
   };
 
+  handleMap = (a, b) => {
+    console.log("LANGLAT:", a, b);
+    const lang = Number(a);
+    const lat = Number(b);
+
+    if (a !== null && a !== "" && b !== null && b !== "") {
+      this.props.navigation.navigate("Map", {
+        lang: parseFloat(a),
+        lat: parseFloat(b),
+      });
+    } else {
+      alert(
+        "There was error with longitude latitude its containing null value "
+      );
+    }
+  };
+
   render() {
     const { selectedStartDate } = this.state;
     const startDate = selectedStartDate ? selectedStartDate.toString() : "";
@@ -221,10 +238,59 @@ export default class ViewSchedule extends React.Component {
               </Text>
             </TouchableOpacity>
 
-            {this.state.totalSch ? (
+            {Array.isArray(this.state.totalSch) &&
+            this.state.totalSch.length > 0 &&
+            this.state.totalSch ? (
               this.state.totalSch.map((sch, id) => {
                 return (
                   <View key={id}>
+                    <View
+                      style={{
+                        width: 334,
+                        height: 60,
+                        backgroundColor: "#FF4B7D",
+                        borderRadius: 10,
+                        alignSelf: "center",
+                        flexDirection: "row",
+                        marginTop: 17,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          marginLeft: 17,
+                          marginTop: 18,
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        {Moment(sch.date).format("D MMM YYYY")}
+                      </Text>
+                      <View
+                        style={{
+                          height: 40,
+                          alignSelf: "center",
+                          marginLeft: 24,
+                          borderLeftWidth: 2,
+                          borderLeftColor: "white",
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          marginLeft: 19,
+                          marginTop: 18,
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        {sch.timeStart.substring(0, 5)}
+                        {sch.timeStart.substring(0, 2) >= 12 ? " PM" : " AM"}
+                        {"-"}
+                        {sch.timeEnd.substring(0, 5)}
+                        {sch.timeEnd.substring(0, 2) >= 12 ? " PM" : " AM"}
+                      </Text>
+                    </View>
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate("EditSchedule", {
@@ -235,54 +301,7 @@ export default class ViewSchedule extends React.Component {
                       <View
                         style={{
                           width: 334,
-                          height: 60,
-                          backgroundColor: "#FF4B7D",
-                          borderRadius: 10,
-                          alignSelf: "center",
-                          flexDirection: "row",
-                          marginTop: 17,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            marginLeft: 17,
-                            marginTop: 18,
-                            fontWeight: "600",
-                            color: "white",
-                          }}
-                        >
-                          {Moment(sch.date).format("D MMM YYYY")}
-                        </Text>
-                        <View
-                          style={{
-                            height: 40,
-                            alignSelf: "center",
-                            marginLeft: 24,
-                            borderLeftWidth: 2,
-                            borderLeftColor: "white",
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            marginLeft: 19,
-                            marginTop: 18,
-                            fontWeight: "600",
-                            color: "white",
-                          }}
-                        >
-                          {sch.timeStart.substring(0, 5)}
-                          {sch.timeStart.substring(0, 2) >= 12 ? " PM" : " AM"}
-                          {"-"}
-                          {sch.timeEnd.substring(0, 5)}
-                          {sch.timeEnd.substring(0, 2) >= 12 ? " PM" : " AM"}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          width: 334,
-                          height: 253,
+                          height: 180,
                           backgroundColor: "#FFFFFF",
                           borderBottomRightRadius: 10,
                           borderBottomLeftRadius: 10,
@@ -328,8 +347,8 @@ export default class ViewSchedule extends React.Component {
                               color: "#7D7D7D",
                             }}
                           >
-                            {sch.address_line2
-                              ? sch.address_line2 + sch.location
+                            {sch.address
+                              ? sch.address + "," + sch.location
                               : "Address Not Found"}
                           </Text>
                         </View>
@@ -352,39 +371,53 @@ export default class ViewSchedule extends React.Component {
                             {sch.phone ? sch.phone : "Phone Numer is not Found"}
                           </Text>
                         </View>
-                        <Button
-                          style={{
-                            marginTop: 23,
-                            width: 138,
-                            height: 50,
-                            marginLeft: 20,
-                            backgroundColor: "#B20838",
-                            borderRadius: 4,
-                            borderWidth: 1,
-                            textAlign: "center",
-                          }}
-                        >
-                          <IconAnt2
-                            name="map-marker"
-                            size={15}
-                            color="white"
-                            style={{ marginLeft: 5 }}
-                          />
-                          <Text> </Text>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              marginLeft: 5,
-                              marginTop: 5,
-                              fontWeight: "600",
-                              color: "white",
-                            }}
-                          >
-                            MAP
-                          </Text>
-                        </Button>
                       </View>
                     </TouchableOpacity>
+                    <View
+                      style={{
+                        width: 334,
+                        height: 80,
+                        backgroundColor: "#FFFFFF",
+                        borderBottomRightRadius: 10,
+                        borderBottomLeftRadius: 10,
+                        alignSelf: "center",
+                      }}
+                    >
+                      <Button
+                        onPress={() =>
+                          this.handleMap(sch.longitude, sch.latitude)
+                        }
+                        style={{
+                          marginTop: 23,
+                          width: 138,
+                          height: 50,
+                          marginLeft: 20,
+                          backgroundColor: "#B20838",
+                          borderRadius: 4,
+                          borderWidth: 1,
+                          textAlign: "center",
+                        }}
+                      >
+                        <IconAnt2
+                          name="map-marker"
+                          size={15}
+                          color="white"
+                          style={{ marginLeft: 5 }}
+                        />
+                        <Text> </Text>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginLeft: 5,
+                            marginTop: 5,
+                            fontWeight: "600",
+                            color: "white",
+                          }}
+                        >
+                          MAP
+                        </Text>
+                      </Button>
+                    </View>
                   </View>
                 );
               })

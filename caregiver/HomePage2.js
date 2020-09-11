@@ -83,7 +83,10 @@ export default class HomePage2 extends React.Component {
     const lat = Number(b);
 
     if (a !== null && a !== "" && b !== null && b !== "") {
-      openMap({ latitude: lang, longitude: lat });
+      this.props.navigation.navigate("MapCare", {
+        lang: parseFloat(a),
+        lat: parseFloat(b),
+      });
     } else {
       alert(
         "There was error with longitude latitude its containing null value "

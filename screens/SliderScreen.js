@@ -151,6 +151,7 @@ export default class SliderScreen extends React.Component {
     return (
       <View style={styles.buttonCircle}>
         <Text
+          onPress={() => this._onDone()}
           style={{
             color: "#fff",
             fontSize: 20,
